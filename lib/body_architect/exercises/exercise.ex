@@ -1,20 +1,21 @@
-defmodule BodyArchitect.Workouts.Workout do
+defmodule BodyArchitect.Exercises.Exercise do
   alias BodyArchitect.Sets.Set
-  alias BodyArchitect.Exercises.Exercise
+  alias BodyArchitect.Workouts.Workout
+
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "workouts" do
+  schema "exercises" do
     field :name, :string
 
-    many_to_many :exercises, Exercise, join_through: Set
+    many_to_many :workouts, Workout, join_through: Set
 
     timestamps(type: :utc_datetime)
   end
 
   @doc false
-  def changeset(workout, attrs) do
-    workout
+  def changeset(exercise, attrs) do
+    exercise
     |> cast(attrs, [:name])
     |> validate_required([:name])
   end

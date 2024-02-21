@@ -18,7 +18,7 @@ defmodule BodyArchitect.Workouts do
 
   """
   def list_workouts do
-    Repo.all(Workout)
+    Repo.all(Workout |> preload([:exercises]))
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule BodyArchitect.Workouts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_workout!(id), do: Repo.get!(Workout, id)
+  def get_workout!(id), do: Workout |> preload([:exercises]) |> Repo.get!(id)
 
   @doc """
   Creates a workout.

@@ -1,0 +1,42 @@
+<.header>
+  Listing Sets
+  <:actions>
+    <.link patch={~p"/sets/new"}>
+      <.button>New Set</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="sets"
+  rows={@streams.sets}
+  row_click={fn {_id, set} -> JS.navigate(~p"/sets/#{set}") end}
+>
+  <:col :let={{_id, set}} label="Reps"><%= set.reps %></:col>
+  <:col :let={{_id, set}} label="Weight"><%= set.weight %></:col>
+  <:action :let={{_id, set}}>
+    <div class="sr-only">
+      <.link navigate={~p"/sets/#{set}"}>Show</.link>
+    </div>
+    <.link patch={~p"/sets/#{set}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, set}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: set.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="set-modal" show on_cancel={JS.patch(~p"/sets")}>
+  <.live_component
+    module={BodyArchitectWeb.SetLive.FormComponent}
+    id={@set.id || :new}
+    title={@page_title}
+    action={@live_action}
+    set={@set}
+    patch={~p"/sets"}
+  />
+</.modal>

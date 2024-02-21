@@ -1,4 +1,9 @@
 defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
+  alias BodyArchitect.Workouts.Workout
+  alias BodyArchitect.Repo
+  alias BodyArchitect.Sets
+  alias BodyArchitect.Sets.Set
+  alias BodyArchitect.Exercises
   use BodyArchitectWeb, :live_component
 
   alias BodyArchitect.Workouts
@@ -20,6 +25,12 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input
+          field={@form[:exercises]}
+          multiple={true}
+          type="select"
+          options={Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)}
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Workout</.button>
         </:actions>
@@ -68,8 +79,72 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
   end
 
   defp save_workout(socket, :new, workout_params) do
-    case Workouts.create_workout(workout_params) do
-      {:ok, workout} ->
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
+      :workout,
+      Workouts.change_workout(%Workout{}, workout_params) |> IO.inspect()
+    )
+    |> Ecto.Multi.insert_all(:sets, Set, fn %{workout: workout} ->
+      prev_sets =
+        Enum.map(workout_params["exercises"], fn exercise_id ->
+          exercise_id = String.to_integer(exercise_id)
+          sets = Sets.list_sets_by(exercise_id: exercise_id) |> IO.inspect()
+
+          new_sets =
+            if sets == [] do
+              []
+            else
+              [last | _prev] = sets
+
+              sets
+              |> Enum.filter(fn prev_set ->
+                last.workout_id == prev_set.workout_id
+              end)
+            end
+            |> IO.inspect(label: :new_sets)
+
+          {exercise_id, new_sets}
+        end)
+
+      |> Enum.map(fn {exercise_id, list} ->
+        if list == [] do
+          IO.inspect("i am here 1")
+
+          workout_params["exercises"]
+          |> Enum.map(fn exercise_id ->
+            exercise_id = String.to_integer(exercise_id)
+
+            %{
+              exercise_id: exercise_id,
+              workout_id: workout.id,
+              reps: 20,
+              weight: 0.0,
+              inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
+              updated_at: DateTime.truncate(DateTime.utc_now(), :second)
+            }
+          end)
+        else
+          IO.inspect("i am here 2")
+
+          list
+          |> Enum.map(fn prev_set ->
+            prev_set
+            |> Map.from_struct()
+            |> Map.drop([:__meta__, :__struct__, :id, :workout_id])
+            |> Map.put(:exercise_id, exercise_id)
+            |> Map.put(:workout_id, workout.id)
+            |> Map.put(:inserted_at, DateTime.truncate(DateTime.utc_now(), :second))
+            |> Map.put(:updated_at, DateTime.truncate(DateTime.utc_now(), :second))
+          end)
+          # |> List.flatten()
+          |> IO.inspect()
+        end
+      end)
+      |> List.flatten()
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{workout: workout}} ->
         notify_parent({:saved, workout})
 
         {:noreply,

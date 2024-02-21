@@ -1,0 +1,46 @@
+<.header>
+  Listing Exercises
+  <:actions>
+    <.link patch={~p"/exercises/new"}>
+      <.button>New Exercise</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="exercises"
+  rows={@streams.exercises}
+  row_click={fn {_id, exercise} -> JS.navigate(~p"/exercises/#{exercise}") end}
+>
+  <:col :let={{_id, exercise}} label="Name"><%= exercise.name %></:col>
+  <:action :let={{_id, exercise}}>
+    <div class="sr-only">
+      <.link navigate={~p"/exercises/#{exercise}"}>Show</.link>
+    </div>
+    <.link patch={~p"/exercises/#{exercise}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, exercise}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: exercise.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="exercise-modal"
+  show
+  on_cancel={JS.patch(~p"/exercises")}
+>
+  <.live_component
+    module={BodyArchitectWeb.ExerciseLive.FormComponent}
+    id={@exercise.id || :new}
+    title={@page_title}
+    action={@live_action}
+    exercise={@exercise}
+    patch={~p"/exercises"}
+  />
+</.modal>

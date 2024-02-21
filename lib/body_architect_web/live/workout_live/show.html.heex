@@ -14,7 +14,12 @@
 
 <.back navigate={~p"/workouts"}>Back to workouts</.back>
 
-<.modal :if={@live_action == :edit} id="workout-modal" show on_cancel={JS.patch(~p"/workouts/#{@workout}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="workout-modal"
+  show
+  on_cancel={JS.patch(~p"/workouts/#{@workout}")}
+>
   <.live_component
     module={BodyArchitectWeb.WorkoutLive.FormComponent}
     id={@workout.id}

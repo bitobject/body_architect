@@ -18,6 +18,27 @@ defmodule BodyArchitectWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/workouts", WorkoutLive.Index, :index
+    live "/workouts/new", WorkoutLive.Index, :new
+    live "/workouts/:id/edit", WorkoutLive.Index, :edit
+
+    live "/workouts/:id", WorkoutLive.Show, :show
+    live "/workouts/:id/show/edit", WorkoutLive.Show, :edit
+
+    live "/exercises", ExerciseLive.Index, :index
+    live "/exercises/new", ExerciseLive.Index, :new
+    live "/exercises/:id/edit", ExerciseLive.Index, :edit
+
+    live "/exercises/:id", ExerciseLive.Show, :show
+    live "/exercises/:id/show/edit", ExerciseLive.Show, :edit
+
+    live "/sets", SetLive.Index, :index
+    live "/sets/new", SetLive.Index, :new
+    live "/sets/:id/edit", SetLive.Index, :edit
+
+    live "/sets/:id", SetLive.Show, :show
+    live "/sets/:id/show/edit", SetLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
@@ -40,12 +61,5 @@ defmodule BodyArchitectWeb.Router do
       live_dashboard "/dashboard", metrics: BodyArchitectWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
-
-    live "/workouts", WorkoutLive.Index, :index
-    live "/workouts/new", WorkoutLive.Index, :new
-    live "/workouts/:id/edit", WorkoutLive.Index, :edit
-
-    live "/workouts/:id", WorkoutLive.Show, :show
-    live "/workouts/:id/show/edit", WorkoutLive.Show, :edit
   end
 end

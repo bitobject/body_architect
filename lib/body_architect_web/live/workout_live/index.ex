@@ -23,7 +23,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Workout")
-    |> assign(:workout, %Workout{})
+    |> assign(:workout, %Workout{exercises: []})
   end
 
   defp apply_action(socket, :index, _params) do
