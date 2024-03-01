@@ -5,7 +5,7 @@ defmodule BodyArchitect.Sets.Set do
   schema "sets" do
     field :completed, :boolean, default: false
     field :reps, :integer
-    field :weight, :float
+    field :weight, :float, default: 0.0
     field :workout_id, :id
     field :exercise_id, :id
 
