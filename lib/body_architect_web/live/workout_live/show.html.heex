@@ -25,33 +25,40 @@
   </p>
 </.link>
 <ol class="">
-  <li :for={exercise <- @workout.exercises} class="my-4 p-4 shadow-lg bg-gray-100 rounded-xl">
-    <div class="flex">
-      <title class="block p-2 uppercase text-xl w-full max-w-64 truncate font-extrabold">
-        <%= exercise.name %>
-      </title>
-      <.link
-        patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}
-        class="shadow-sm bg-gray-200 rounded-xl"
-      >
-        <p class="p-2 px-4 text-gray-500 text-center rounded-2xl truncate font-bold">add set</p>
-      </.link>
+  <li :for={exercise <- @workout.exercises} class="my-8 p-4 shadow-lg bg-gray-50 rounded-xl">
+    <div class="pb-4">
+      <p class="text-gray-400 font-bold"><%= gettext("exercise") %></p>
+      <header class="flex">
+        <title class="block uppercase text-xl w-full max-w-64 truncate font-extrabold">
+          <%= exercise.name %>
+        </title>
+        <.link
+          patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}
+          class="flex items-center justify-center shadow-sm bg-gray-100 rounded-xl"
+        >
+          <p class="px-4 text-gray-500 text-center rounded-2xl truncate font-bold">add set</p>
+        </.link>
+      </header>
     </div>
-    <ol>
-      <li :for={{set, i} <- Enum.with_index(exercise.sets)} class="flex">
-        <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
-          <%= i %>
-        </div>
-        <.live_component
-          module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
-          id={"set_#{set.id}"}
-          title={@page_title}
-          action={@live_action}
-          set={set}
-          patch={~p"/workouts/#{@workout.id}"}
-        />
-      </li>
-    </ol>
+    <hr class="" />
+    <div class="p-4">
+      <p class="text-gray-400 font-bold"><%= gettext("sets") %></p>
+      <ol class="">
+        <li :for={{set, i} <- Enum.with_index(exercise.sets, 1)} class="flex">
+          <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
+            <%= i %>
+          </div>
+          <.live_component
+            module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
+            id={"set_#{set.id}"}
+            title={@page_title}
+            action={@live_action}
+            set={set}
+            patch={~p"/workouts/#{@workout.id}"}
+          />
+        </li>
+      </ol>
+    </div>
   </li>
 </ol>
 
