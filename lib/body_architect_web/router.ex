@@ -24,6 +24,9 @@ defmodule BodyArchitectWeb.Router do
     live "/workouts/:id/edit", WorkoutLive.Index, :edit
 
     live "/workouts/:id", WorkoutLive.Show, :show
+    live "/workouts/:id/exercises/:exercise_id/sets/new", WorkoutLive.Show, :add_set
+    live "/workouts/:id/sets/new", WorkoutLive.Show, :new_set
+    live "/workouts/:id/sets/:set_id/edit", WorkoutLive.Show, :edit_set
     live "/workouts/:id/show/edit", WorkoutLive.Show, :edit
 
     live "/exercises", ExerciseLive.Index, :index

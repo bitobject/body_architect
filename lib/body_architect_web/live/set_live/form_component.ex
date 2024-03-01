@@ -21,6 +21,16 @@ defmodule BodyArchitectWeb.SetLive.FormComponent do
       >
         <.input field={@form[:reps]} type="number" label="Reps" />
         <.input field={@form[:weight]} type="number" label="Weight" step="any" />
+        <.input field={@form[:completed]} type="checkbox" label="completed" step="any" />
+        <.input
+          field={@form[:exercise_id]}
+          type="select"
+          options={@exercises |> Enum.into([], fn x -> {x.name, x.id} end)}
+          ,
+          label="exercises"
+          step="any"
+        />
+        <.input field={@form[:workout_id]} type="number" , label="workout" step="any" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Set</.button>
         </:actions>
@@ -53,6 +63,21 @@ defmodule BodyArchitectWeb.SetLive.FormComponent do
     save_set(socket, socket.assigns.action, set_params)
   end
 
+  defp save_set(socket, :edit_set, set_params) do
+    case Sets.update_set(socket.assigns.set, set_params) do
+      {:ok, set} ->
+        notify_parent({:saved, set})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Set updated successfully")
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
   defp save_set(socket, :edit, set_params) do
     case Sets.update_set(socket.assigns.set, set_params) do
       {:ok, set} ->
@@ -69,6 +94,36 @@ defmodule BodyArchitectWeb.SetLive.FormComponent do
   end
 
   defp save_set(socket, :new, set_params) do
+    case Sets.create_set(set_params) do
+      {:ok, set} ->
+        notify_parent({:saved, set})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Set created successfully")
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp save_set(socket, :new_set, set_params) do
+    case Sets.create_set(set_params) do
+      {:ok, set} ->
+        notify_parent({:saved, set})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Set created successfully")
+         |> push_patch(to: socket.assigns.patch)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp save_set(socket, :add_set, set_params) do
     case Sets.create_set(set_params) do
       {:ok, set} ->
         notify_parent({:saved, set})

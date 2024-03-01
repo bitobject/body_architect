@@ -5,8 +5,9 @@ defmodule BodyArchitect.Repo.Migrations.CreateSets do
     create table(:sets) do
       add :reps, :integer
       add :weight, :float
-      add :workout_id, references(:workouts, on_delete: :nothing)
-      add :exercise_id, references(:exercises, on_delete: :nothing)
+      add :completed, :boolean, default: false
+      add :workout_id, references(:workouts, on_delete: :delete_all)
+      add :exercise_id, references(:exercises, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

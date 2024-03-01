@@ -1,16 +1,49 @@
 <.header>
-  Workout <%= @workout.id %>
-  <:subtitle>This is a workout record from your database.</:subtitle>
+  <ol class="flex">
+    <li class="text-4xl px-2 uppercase"><%= @workout.name %></li>
+    <li class="px-2 text-xs self-end text-gray-400"><%= @workout.id %></li>
+  </ol>
   <:actions>
     <.link patch={~p"/workouts/#{@workout}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit workout</.button>
     </.link>
   </:actions>
 </.header>
-
-<.list>
-  <:item title="Name"><%= @workout.name %></:item>
-</.list>
+<ol class="flex flex-wrap pt-4">
+  <li
+    :for={exercise <- @workout.exercises}
+    class="m-2 p-2 uppercase bg-gray-200 rounded-2xl text-gray-600"
+  >
+    <.link patch={~p"/exercises/#{exercise.id}"} phx-click={JS.push_focus()}>
+      <%= exercise.name %>
+    </.link>
+  </li>
+</ol>
+<.link patch={~p"/workouts/#{@workout}/sets/new"}>New Exercise</.link>
+<ol class="">
+  <li :for={exercise <- @workout.exercises} class="m-2 p-2 bg-gray-200 rounded-2xl">
+    <div class="flex">
+      <title class="block p-2 uppercase text-xl w-full max-w-64 truncate">
+        <%= exercise.name %>
+      </title>
+      <.link patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}>
+        <p class="p-2 px-4 bg-gray-400 text-center rounded-2xl text-white truncate">add set</p>
+      </.link>
+    </div>
+    <ol>
+      <li :for={set <- exercise.sets}>
+        <.live_component
+          module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
+          id={"set_#{set.id}"}
+          title={@page_title}
+          action={@live_action}
+          set={set}
+          patch={~p"/workouts/#{@workout.id}"}
+        />
+      </li>
+    </ol>
+  </li>
+</ol>
 
 <.back navigate={~p"/workouts"}>Back to workouts</.back>
 
@@ -26,6 +59,23 @@
     title={@page_title}
     action={@live_action}
     workout={@workout}
+    patch={~p"/workouts/#{@workout}"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action in [:new_set, :add_set, :edit_set]}
+  id="set-modal"
+  show
+  on_cancel={JS.patch(~p"/workouts/#{@workout}")}
+>
+  <.live_component
+    module={BodyArchitectWeb.SetLive.FormComponent}
+    id={@set.id || :new}
+    title={@page_title}
+    action={@live_action}
+    set={@set}
+    exercises={@exercises || []}
     patch={~p"/workouts/#{@workout}"}
   />
 </.modal>

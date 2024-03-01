@@ -4,9 +4,9 @@ defmodule BodyArchitectWeb.SetLiveTest do
   import Phoenix.LiveViewTest
   import BodyArchitect.SetsFixtures
 
-  @create_attrs %{reps: 42, weight: 120.5}
-  @update_attrs %{reps: 43, weight: 456.7}
-  @invalid_attrs %{reps: nil, weight: nil}
+  @create_attrs %{reps: 42, weight: 120.5, completed: false}
+  @update_attrs %{reps: 43, weight: 456.7, completed: true}
+  @invalid_attrs %{reps: nil, weight: nil, completed: false}
 
   defp create_set(_) do
     set = set_fixture()

@@ -8,6 +8,7 @@ defmodule BodyArchitect.Exercises.Exercise do
   schema "exercises" do
     field :name, :string
 
+    has_many :sets, Set
     many_to_many :workouts, Workout, join_through: Set
 
     timestamps(type: :utc_datetime)

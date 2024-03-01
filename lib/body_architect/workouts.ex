@@ -4,6 +4,8 @@ defmodule BodyArchitect.Workouts do
   """
 
   import Ecto.Query, warn: false
+  alias BodyArchitect.Sets.Set
+  alias BodyArchitect.Exercises.Exercise
   alias BodyArchitect.Repo
 
   alias BodyArchitect.Workouts.Workout
@@ -35,7 +37,15 @@ defmodule BodyArchitect.Workouts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_workout!(id), do: Workout |> preload([:exercises]) |> Repo.get!(id)
+  def get_workout!(id) do
+    Workout
+    |> where([w], w.id == ^id)
+    |> join(:left, [w], s in Set, on: w.id == s.workout_id)
+    |> join(:left, [w, s], e in Exercise, on: s.exercise_id == e.id)
+    |> preload([w, s, e], exercises: {e, sets: s})
+    |> order_by([w, s, e], [w.id, e.id, s.id])
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a workout.

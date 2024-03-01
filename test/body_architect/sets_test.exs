@@ -8,7 +8,7 @@ defmodule BodyArchitect.SetsTest do
 
     import BodyArchitect.SetsFixtures
 
-    @invalid_attrs %{reps: nil, weight: nil}
+    @invalid_attrs %{reps: nil, weight: nil, completed: false}
 
     test "list_sets/0 returns all sets" do
       set = set_fixture()
@@ -21,11 +21,12 @@ defmodule BodyArchitect.SetsTest do
     end
 
     test "create_set/1 with valid data creates a set" do
-      valid_attrs = %{reps: 42, weight: 120.5}
+      valid_attrs = %{reps: 42, weight: 120.5, completed: false}
 
       assert {:ok, %Set{} = set} = Sets.create_set(valid_attrs)
       assert set.reps == 42
       assert set.weight == 120.5
+      assert set.completed == false
     end
 
     test "create_set/1 with invalid data returns error changeset" do
@@ -34,11 +35,12 @@ defmodule BodyArchitect.SetsTest do
 
     test "update_set/2 with valid data updates the set" do
       set = set_fixture()
-      update_attrs = %{reps: 43, weight: 456.7}
+      update_attrs = %{reps: 43, weight: 456.7, completed: true}
 
       assert {:ok, %Set{} = set} = Sets.update_set(set, update_attrs)
       assert set.reps == 43
       assert set.weight == 456.7
+      assert set.completed == true
     end
 
     test "update_set/2 with invalid data returns error changeset" do

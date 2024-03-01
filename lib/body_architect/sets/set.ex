@@ -3,6 +3,7 @@ defmodule BodyArchitect.Sets.Set do
   import Ecto.Changeset
 
   schema "sets" do
+    field :completed, :boolean, default: false
     field :reps, :integer
     field :weight, :float
     field :workout_id, :id
@@ -14,7 +15,7 @@ defmodule BodyArchitect.Sets.Set do
   @doc false
   def changeset(set, attrs) do
     set
-    |> cast(attrs, [:reps, :weight])
+    |> cast(attrs, [:reps, :weight, :completed, :workout_id, :exercise_id])
     |> validate_required([:reps, :weight])
   end
 end

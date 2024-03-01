@@ -29,7 +29,8 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
           field={@form[:exercises]}
           multiple={true}
           type="select"
-          options={Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)}
+          options={@exercises}
+          value="exercises"
         />
         <:actions>
           <.button phx-disable-with="Saving...">Save Workout</.button>
@@ -43,9 +44,12 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
   def update(%{workout: workout} = assigns, socket) do
     changeset = Workouts.change_workout(workout)
 
+    exercises = Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:exercises, exercises)
      |> assign_form(changeset)}
   end
 
@@ -82,13 +86,13 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
       :workout,
-      Workouts.change_workout(%Workout{}, workout_params) |> IO.inspect()
+      Workouts.change_workout(%Workout{}, workout_params)
     )
     |> Ecto.Multi.insert_all(:sets, Set, fn %{workout: workout} ->
       prev_sets =
         Enum.map(workout_params["exercises"], fn exercise_id ->
           exercise_id = String.to_integer(exercise_id)
-          sets = Sets.list_sets_by(exercise_id: exercise_id) |> IO.inspect()
+          sets = Sets.list_sets_by(exercise_id: exercise_id)
 
           new_sets =
             if sets == [] do
@@ -101,46 +105,36 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
                 last.workout_id == prev_set.workout_id
               end)
             end
-            |> IO.inspect(label: :new_sets)
 
           {exercise_id, new_sets}
         end)
-
-      |> Enum.map(fn {exercise_id, list} ->
-        if list == [] do
-          IO.inspect("i am here 1")
-
-          workout_params["exercises"]
-          |> Enum.map(fn exercise_id ->
-            exercise_id = String.to_integer(exercise_id)
-
+        |> Enum.map(fn {exercise_id, list} ->
+          if list == [] do
             %{
               exercise_id: exercise_id,
               workout_id: workout.id,
               reps: 20,
               weight: 0.0,
+              completed: false,
               inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
               updated_at: DateTime.truncate(DateTime.utc_now(), :second)
             }
-          end)
-        else
-          IO.inspect("i am here 2")
-
-          list
-          |> Enum.map(fn prev_set ->
-            prev_set
-            |> Map.from_struct()
-            |> Map.drop([:__meta__, :__struct__, :id, :workout_id])
-            |> Map.put(:exercise_id, exercise_id)
-            |> Map.put(:workout_id, workout.id)
-            |> Map.put(:inserted_at, DateTime.truncate(DateTime.utc_now(), :second))
-            |> Map.put(:updated_at, DateTime.truncate(DateTime.utc_now(), :second))
-          end)
-          # |> List.flatten()
-          |> IO.inspect()
-        end
-      end)
-      |> List.flatten()
+          else
+            list
+            |> Enum.map(fn prev_set ->
+              %{
+                exercise_id: exercise_id,
+                workout_id: workout.id,
+                reps: prev_set.reps,
+                weight: prev_set.weight,
+                completed: false,
+                inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
+                updated_at: DateTime.truncate(DateTime.utc_now(), :second)
+              }
+            end)
+          end
+        end)
+        |> List.flatten()
     end)
     |> Repo.transaction()
     |> case do

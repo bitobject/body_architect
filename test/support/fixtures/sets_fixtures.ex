@@ -12,7 +12,8 @@ defmodule BodyArchitect.SetsFixtures do
       attrs
       |> Enum.into(%{
         reps: 42,
-        weight: 120.5
+        weight: 120.5,
+        completed: false
       })
       |> BodyArchitect.Sets.create_set()
 
