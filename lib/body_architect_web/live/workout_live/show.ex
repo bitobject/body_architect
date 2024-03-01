@@ -52,12 +52,32 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
 
   defp apply_action(socket, :add_set, %{"id" => id, "exercise_id" => exercise_id} = params) do
     workout = Workouts.get_workout!(id)
+    int_exercise_id = String.to_integer(exercise_id)
+
+    prev_set =
+      workout.exercises
+      |> Enum.find(%{}, fn %Exercise{} = exercise -> int_exercise_id == exercise.id end)
+      |> Map.get(:sets, [])
+      |> Enum.reverse()
+      |> List.first()
+
+    new_set =
+      if prev_set do
+        %Set{
+          exercise_id: int_exercise_id,
+          workout_id: workout.id,
+          reps: prev_set.reps,
+          weight: prev_set.weight
+        }
+      else
+        %Set{exercise_id: int_exercise_id, workout_id: workout.id}
+      end
 
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, workout)
     |> assign(:exercises, Exercises.list_exercises())
-    |> assign(:set, %Set{exercise_id: exercise_id, workout_id: workout.id})
+    |> assign(:set, new_set)
   end
 
   defp apply_action(socket, :new_set, %{"id" => id} = params) do

@@ -9,29 +9,39 @@
     </.link>
   </:actions>
 </.header>
-<ol class="flex flex-wrap pt-4">
+<ol class="flex flex-wrap py-4">
   <li
     :for={exercise <- @workout.exercises}
-    class="m-2 p-2 uppercase bg-gray-200 rounded-2xl text-gray-600"
+    class="shadow-lg bg-gray-100 rounded-xl p-2 text-center mr-2 mb-2"
   >
     <.link patch={~p"/exercises/#{exercise.id}"} phx-click={JS.push_focus()}>
       <%= exercise.name %>
     </.link>
   </li>
 </ol>
-<.link patch={~p"/workouts/#{@workout}/sets/new"}>New Exercise</.link>
+<.link patch={~p"/workouts/#{@workout}/sets/new"}>
+  <p class="shadow-lg bg-gray-100 rounded-xl max-w-40 p-2 text-center font-extrabold">
+    New Exercise
+  </p>
+</.link>
 <ol class="">
-  <li :for={exercise <- @workout.exercises} class="m-2 p-2 bg-gray-200 rounded-2xl">
+  <li :for={exercise <- @workout.exercises} class="my-4 p-4 shadow-lg bg-gray-100 rounded-xl">
     <div class="flex">
-      <title class="block p-2 uppercase text-xl w-full max-w-64 truncate">
+      <title class="block p-2 uppercase text-xl w-full max-w-64 truncate font-extrabold">
         <%= exercise.name %>
       </title>
-      <.link patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}>
-        <p class="p-2 px-4 bg-gray-400 text-center rounded-2xl text-white truncate">add set</p>
+      <.link
+        patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}
+        class="shadow-sm bg-gray-200 rounded-xl"
+      >
+        <p class="p-2 px-4 text-gray-500 text-center rounded-2xl truncate font-bold">add set</p>
       </.link>
     </div>
     <ol>
-      <li :for={set <- exercise.sets}>
+      <li :for={{set, i} <- Enum.with_index(exercise.sets)} class="flex">
+        <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
+          <%= i %>
+        </div>
         <.live_component
           module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
           id={"set_#{set.id}"}
