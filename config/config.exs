@@ -13,7 +13,6 @@ config :body_architect,
 
 # Configures the endpoint
 config :body_architect, BodyArchitectWeb.Endpoint,
-  url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: BodyArchitectWeb.ErrorHTML, json: BodyArchitectWeb.ErrorJSON],

@@ -26,11 +26,10 @@ defmodule BodyArchitectWeb.SetLive.FormComponent do
           field={@form[:exercise_id]}
           type="select"
           options={@exercises |> Enum.into([], fn x -> {x.name, x.id} end)}
-          ,
           label="exercises"
           step="any"
         />
-        <.input field={@form[:workout_id]} type="number" , label="workout" step="any" />
+        <.input field={@form[:workout_id]} type="number" label="workout" step="any" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Set</.button>
         </:actions>

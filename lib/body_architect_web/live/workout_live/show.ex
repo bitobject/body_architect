@@ -8,7 +8,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
   alias BodyArchitect.Sets
 
   @impl true
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket}
   end
 
@@ -24,7 +24,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
   end
 
   @impl true
-  def handle_params(params, url, socket) do
+  def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
@@ -42,7 +42,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
     |> assign(:set, nil)
   end
 
-  defp apply_action(socket, :edit_set, %{"id" => id, "set_id" => set_id} = params) do
+  defp apply_action(socket, :edit_set, %{"id" => id, "set_id" => set_id}) do
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, Workouts.get_workout!(id))
@@ -50,7 +50,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
     |> assign(:set, Sets.get_set!(set_id))
   end
 
-  defp apply_action(socket, :add_set, %{"id" => id, "exercise_id" => exercise_id} = params) do
+  defp apply_action(socket, :add_set, %{"id" => id, "exercise_id" => exercise_id}) do
     workout = Workouts.get_workout!(id)
     int_exercise_id = String.to_integer(exercise_id)
 
@@ -80,7 +80,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
     |> assign(:set, new_set)
   end
 
-  defp apply_action(socket, :new_set, %{"id" => id} = params) do
+  defp apply_action(socket, :new_set, %{"id" => id}) do
     workout = Workouts.get_workout!(id)
 
     socket

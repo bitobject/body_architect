@@ -19,26 +19,24 @@
     </.link>
   </li>
 </ol>
-<.link patch={~p"/workouts/#{@workout}/sets/new"}>
-  <p class="shadow-lg bg-gray-100 rounded-xl max-w-40 p-2 text-center font-extrabold">
+<.link patch={~p"/workouts/#{@workout}/sets/new"} class="sticky top-0">
+  <p class="shadow-lg bg-gray-100 rounded-xl p-2 text-center font-extrabold">
     New Exercise
   </p>
 </.link>
 <ol class="">
   <li :for={exercise <- @workout.exercises} class="my-8 p-4 shadow-lg bg-gray-50 rounded-xl">
-    <div class="pb-4">
-      <p class="text-gray-400 font-bold"><%= gettext("exercise") %></p>
-      <header class="flex">
-        <title class="block uppercase text-xl w-full max-w-64 truncate font-extrabold">
-          <%= exercise.name %>
-        </title>
-        <.link
-          patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"}
-          class="flex items-center justify-center shadow-sm bg-gray-100 rounded-xl"
-        >
-          <p class="px-4 text-gray-500 text-center rounded-2xl truncate font-bold">add set</p>
-        </.link>
-      </header>
+    <p class="text-gray-400 font-bold"><%= gettext("exercise") %></p>
+    <header class="uppercase text-xl w-full truncate font-extrabold mb-2">
+      <%= exercise.name %>
+    </header>
+    <div class="flex pb-4 overflow-scroll flex-wrap">
+      <.link patch={~p"/workouts/#{@workout}/exercises/#{exercise}/sets/new"} class="mr-4">
+        <.icon name="hero-plus" class="h-8 w-8" />
+      </.link>
+      <.icon name="hero-eye" class="h-8 w-8 mr-4" />
+      <.icon name="hero-eye-slash" class="h-8 w-8 mr-4" />
+      <.icon name="hero-chart-bar" class="h-8 w-8 mr-4" />
     </div>
     <hr class="" />
     <div class="p-4">

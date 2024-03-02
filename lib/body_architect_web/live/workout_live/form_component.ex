@@ -89,52 +89,51 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
       Workouts.change_workout(%Workout{}, workout_params)
     )
     |> Ecto.Multi.insert_all(:sets, Set, fn %{workout: workout} ->
-      prev_sets =
-        Enum.map(workout_params["exercises"], fn exercise_id ->
-          exercise_id = String.to_integer(exercise_id)
-          sets = Sets.list_sets_by(exercise_id: exercise_id)
+      Enum.map(workout_params["exercises"], fn exercise_id ->
+        exercise_id = String.to_integer(exercise_id)
+        sets = Sets.list_sets_by(exercise_id: exercise_id)
 
-          new_sets =
-            if sets == [] do
-              []
-            else
-              [last | _prev] = sets
+        new_sets =
+          if sets == [] do
+            []
+          else
+            [last | _prev] = sets
 
-              sets
-              |> Enum.filter(fn prev_set ->
-                last.workout_id == prev_set.workout_id
-              end)
-            end
+            sets
+            |> Enum.filter(fn prev_set ->
+              last.workout_id == prev_set.workout_id
+            end)
+          end
 
-          {exercise_id, new_sets}
-        end)
-        |> Enum.map(fn {exercise_id, list} ->
-          if list == [] do
+        {exercise_id, new_sets}
+      end)
+      |> Enum.map(fn {exercise_id, list} ->
+        if list == [] do
+          %{
+            exercise_id: exercise_id,
+            workout_id: workout.id,
+            reps: 20,
+            weight: 0.0,
+            completed: false,
+            inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
+            updated_at: DateTime.truncate(DateTime.utc_now(), :second)
+          }
+        else
+          list
+          |> Enum.map(fn prev_set ->
             %{
               exercise_id: exercise_id,
               workout_id: workout.id,
-              reps: 20,
-              weight: 0.0,
+              reps: prev_set.reps,
+              weight: prev_set.weight,
               completed: false,
               inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
               updated_at: DateTime.truncate(DateTime.utc_now(), :second)
             }
-          else
-            list
-            |> Enum.map(fn prev_set ->
-              %{
-                exercise_id: exercise_id,
-                workout_id: workout.id,
-                reps: prev_set.reps,
-                weight: prev_set.weight,
-                completed: false,
-                inserted_at: DateTime.truncate(DateTime.utc_now(), :second),
-                updated_at: DateTime.truncate(DateTime.utc_now(), :second)
-              }
-            end)
-          end
-        end)
-        |> List.flatten()
+          end)
+        end
+      end)
+      |> List.flatten()
     end)
     |> Repo.transaction()
     |> case do
