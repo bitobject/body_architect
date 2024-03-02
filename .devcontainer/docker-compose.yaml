@@ -1,0 +1,52 @@
+version: "3.6"
+
+services:
+  body_architect:
+    build:
+      context: ./body_architect
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      MIX_ENV: dev
+      ERL_AFLAGS: "-kernel shell_history enabled -kernel shell_history_file_bytes 1024000"
+    working_dir: /app
+    depends_on:
+      - pg 
+    volumes:
+      - ../:/app
+      - "~/.gitconfig:/home/vscode/.gitconfig"
+      - ${SSH_PATH}:/home/vscode/.ssh:ro
+    ports: 
+      - "${WEB_PORT}:${WEB_PORT}"
+    # Overrides default command so things don't shut down after the process ends.
+    restart: always
+    command: bash -c "sleep infinity"
+    networks:
+      - body_architect
+  pg:
+    image: postgres:15.2
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      PGPORT: $PG_PORT
+    container_name: $PG_HOST
+    restart: always
+    volumes:
+      - ../postgres-data:/var/lib/postgresql/data
+      - pg_body_architect_volume:/var/lib/postgresql/data
+    networks:
+      - body_architect
+    ports:
+      - "${PG_PORT}:${PG_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+networks:
+  body_architect:
+    driver: bridge
+volumes:
+  pg_body_architect_volume:
+    external: true
