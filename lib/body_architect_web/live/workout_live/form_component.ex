@@ -25,6 +25,7 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
+        <.input field={@form[:date]} type="date" label="Date" />
         <.input
           field={@form[:exercises]}
           multiple={true}
@@ -45,7 +46,7 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
     changeset = Workouts.change_workout(workout)
 
     exercises = Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)
-
+    IO.inspect(assigns)
     {:ok,
      socket
      |> assign(assigns)

@@ -1,4 +1,4 @@
-  <.header>
+<.header>
   Listing Workouts
   <:actions>
     <.link patch={~p"/workouts/new"}>
@@ -45,10 +45,3 @@
     patch={~p"/workouts"}
   />
 </.modal>
-
-
-  <.live_component
-    module={BodyArchitectWeb.CalendarComponent}
-    id={"@workout.id"},
-    workouts={@workouts_with_dates}
-  />

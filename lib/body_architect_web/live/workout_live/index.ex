@@ -6,7 +6,11 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :workouts, Workouts.list_workouts())}
+    all_workouts = Workouts.list_workouts()
+    {:ok,
+    stream(socket, :workouts, all_workouts)
+    |> assign(:workouts_with_dates, Enum.group_by(all_workouts, fn d -> d.date end))
+  }
   end
 
   @impl true
@@ -18,6 +22,12 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
     socket
     |> assign(:page_title, "Edit Workout")
     |> assign(:workout, Workouts.get_workout!(id))
+  end
+
+  defp apply_action(socket, :new, %{"date" => date}) do
+    socket
+    |> assign(:page_title, "New Workout")
+    |> assign(:workout, %Workout{exercises: [], date: date})
   end
 
   defp apply_action(socket, :new, _params) do
