@@ -1,71 +1,68 @@
-defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
-  alias BodyArchitect.Workouts.Workout
+defmodule BodyArchitectWeb.WorkoutLive.Calendar do
+  alias BodyArchitect.Exercises
   alias BodyArchitect.Repo
   alias BodyArchitect.Sets
   alias BodyArchitect.Sets.Set
-  alias BodyArchitect.Exercises
-  use BodyArchitectWeb, :live_component
+  alias BodyArchitect.Workouts
+  alias BodyArchitect.Workouts.Workout
+
+  use BodyArchitectWeb, :live_view
 
   alias BodyArchitect.Workouts
 
-  @impl true
-  def render(assigns) do
-    ~H"""
-    <div>
-      <.header>
-        <%= @title %>
-        <:subtitle>Use this form to manage workout records in your database.</:subtitle>
-      </.header>
+  @week_start_at :monday
 
-      <.simple_form
-        for={@form}
-        id="workout-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:date]} type="date" label="Date" />
-        <.input
-          field={@form[:exercises]}
-          multiple={true}
-          type="select"
-          options={@exercises}
-          value="exercises"
-        />
-        <:actions>
-          <.button phx-disable-with="Saving...">Save Workout</.button>
-        </:actions>
-      </.simple_form>
-    </div>
-    """
+  @impl true
+  def mount(_params, _session, socket) do
+    current_date = Date.utc_today()
+    all_workouts = Workouts.list_workouts()
+
+    assigns = [
+      current_date: current_date,
+      selected_date: nil,
+      week_rows: week_rows(current_date),
+      workouts: Enum.group_by(all_workouts, fn d -> d.date end)
+    ]
+
+    {:ok, assign(socket, assigns)}
   end
 
   @impl true
-  def update(%{workout: workout} = assigns, socket) do
-    changeset = Workouts.change_workout(workout)
-
-    exercises = Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)
-
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(:exercises, exercises)
-     |> assign_form(changeset)}
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  @impl true
-  def handle_event("validate", %{"workout" => workout_params}, socket) do
-    changeset =
-      socket.assigns.workout
-      |> Workouts.change_workout(workout_params)
-      |> Map.put(:action, :validate)
-
-    {:noreply, assign_form(socket, changeset)}
+  defp apply_action(socket, :index, _params) do
+    socket
+    |> assign(:selected_date, nil)
   end
 
-  def handle_event("save", %{"workout" => workout_params}, socket) do
-    save_workout(socket, socket.assigns.action, workout_params)
+  defp apply_action(socket, :show_date, %{"date" => date}) do
+    socket
+    |> assign(:selected_date, Date.from_iso8601!(date))
+    |> assign(:live_action, :calendar_date)
+  end
+
+  def handle_event("prev-month", _, socket) do
+    new_date = socket.assigns.current_date |> Date.beginning_of_month() |> Date.add(-1)
+
+    assigns = [
+      current_date: new_date,
+      week_rows: week_rows(new_date)
+    ]
+
+    {:noreply, assign(socket, assigns)}
+  end
+
+  def handle_event("next-month", _, socket) do
+    new_date = socket.assigns.current_date |> Date.end_of_month() |> Date.add(1)
+
+    assigns = [
+      current_date: new_date,
+      week_rows: week_rows(new_date)
+    ]
+
+    {:noreply, assign(socket, assigns)}
   end
 
   defp save_workout(socket, :edit, workout_params) do
@@ -156,4 +153,27 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp week_rows(current_date) do
+    first =
+      current_date
+      |> Date.beginning_of_month()
+      |> Date.beginning_of_week(@week_start_at)
+
+    last =
+      current_date
+      |> Date.end_of_month()
+      |> Date.end_of_week(@week_start_at)
+
+    Date.range(first, last)
+    |> Enum.map(& &1)
+    |> Enum.chunk_every(7)
+  end
+
+  defp selected_date?(day, selected_date), do: day == selected_date
+
+  defp today?(day), do: day == Date.utc_today()
+
+  defp other_month?(day, current_date),
+    do: Date.beginning_of_month(day) != Date.beginning_of_month(current_date)
 end

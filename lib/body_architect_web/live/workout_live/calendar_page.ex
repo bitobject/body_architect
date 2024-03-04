@@ -1,4 +1,4 @@
-defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
+defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
   alias BodyArchitect.Workouts.Workout
   alias BodyArchitect.Repo
   alias BodyArchitect.Sets
@@ -13,45 +13,33 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
     ~H"""
     <div>
       <.header>
-        <%= @title %>
-        <:subtitle>Use this form to manage workout records in your database.</:subtitle>
+        <%= @date %>
+        <:subtitle>
+          <.link
+            patch={~p"/workouts/new?date=#{Calendar.strftime(@date, "%Y-%m-%d")}"}
+            class="text-zinc-400 "
+          >
+            <div>
+              <.icon name="hero-plus" class="h-6 w-6" />
+            </div>
+          </.link>
+        </:subtitle>
       </.header>
 
-      <.simple_form
-        for={@form}
-        id="workout-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:date]} type="date" label="Date" />
-        <.input
-          field={@form[:exercises]}
-          multiple={true}
-          type="select"
-          options={@exercises}
-          value="exercises"
-        />
-        <:actions>
-          <.button phx-disable-with="Saving...">Save Workout</.button>
-        </:actions>
-      </.simple_form>
+      <div class="h-20 w-14 truncate">
+        <div :for={workout <- @workouts[@date] || []} class="uppercase p-2">
+          <.link navigate={~p"/workouts/#{workout}"}><%= workout.name %></.link>
+        </div>
+      </div>
     </div>
     """
   end
 
   @impl true
-  def update(%{workout: workout} = assigns, socket) do
-    changeset = Workouts.change_workout(workout)
-
-    exercises = Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)
-
+  def update(assigns, socket) do
     {:ok,
      socket
-     |> assign(assigns)
-     |> assign(:exercises, exercises)
-     |> assign_form(changeset)}
+     |> assign(assigns)}
   end
 
   @impl true

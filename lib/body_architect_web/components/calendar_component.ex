@@ -1,5 +1,3 @@
-
-
 defmodule BodyArchitectWeb.CalendarComponent do
   use BodyArchitectWeb, :live_component
 
@@ -25,35 +23,61 @@ defmodule BodyArchitectWeb.CalendarComponent do
           </tr>
         </thead>
         <tbody>
-          <tr class="" :for={week <- @week_rows}>
-            <td :for={day <- week} class={[
-              "text-center relative",
-              today?(day) && "bg-green-100",
-              other_month?(day, @current_date) && "bg-gray-100",
-              selected_date?(day, @selected_date) && "bg-blue-100"
-            ]}>
+          <tr :for={week <- @week_rows} class="">
+            <td
+              :for={day <- week}
+              class={[
+                "text-center relative",
+                today?(day) && "bg-green-100",
+                other_month?(day, @current_date) && "bg-gray-100",
+                selected_date?(day, @selected_date) && "bg-blue-100"
+              ]}
+            >
               <%!-- <button type="button" phx-target={@myself} phx-click="pick-date" phx-value-date={Calendar.strftime(day, "%Y-%m-%d")}>
                 <time datetime={Calendar.strftime(day, "%Y-%m-%d")}><%= Calendar.strftime(day, "%d") %></time>
               </button> --%>
               <div class="flex justify-between">
-                <div class="text-zinc-400 text-xl h-full flex items-center align-center">
+                <%!-- <div class="text-zinc-400 text-xl h-full flex items-center align-center">
                   <time datetime={Calendar.strftime(day, "%Y-%m-%d")}><%= Calendar.strftime(day, "%d") %></time>
-                </div>
-              <.link patch={~p"/workouts/new?date=#{Calendar.strftime(day, "%Y-%m-%d")}"} class="text-zinc-400 ">
+                </div> --%>
+                <%!-- <.link patch={~p"/workouts/new?date=#{Calendar.strftime(day, "%Y-%m-%d")}"} class="text-zinc-400 ">
                 <div>
                   <.icon name="hero-plus" class="h-6 w-6" />
                 </div>
-              </.link>
-              </div>
-              <div class="h-20 w-14 truncate">
-                <div class="uppercase p-2" :for={workout <- @workouts[day] || []} >
-                <.link navigate={~p"/workouts/#{workout}"}>sfsdfsd<%= workout.name %></.link>
-                </div>
+              </.link> --%>
+                <.link
+                  phx-target={@myself}
+                  phx-click="pick-date"
+                  phx-value-date={Calendar.strftime(day, "%Y-%m-%d")}
+                  class="text-zinc-400"
+                >
+                  <div class="text-zinc-400 text-xl h-full flex items-center align-center">
+                    <time datetime={Calendar.strftime(day, "%Y-%m-%d")}>
+                      <%= Calendar.strftime(day, "%d") %>
+                    </time>
+                  </div>
+                </.link>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
+      <.modal
+        :if={@live_action == :calendar_date}
+        id="calendar-modal"
+        show
+        phx-target={@myself}
+        on_cancel={JS.patch(~p"/workouts")}
+      >
+        <.live_component
+          module={BodyArchitectWeb.WorkoutLive.CalendarPageComponent}
+          id={@selected_date}
+          date={@selected_date}
+          action={@live_action}
+          workouts={@workouts}
+          patch={~p"/workouts"}
+        />
+      </.modal>
     </div>
     """
   end
@@ -109,12 +133,15 @@ defmodule BodyArchitectWeb.CalendarComponent do
   end
 
   def handle_event("pick-date", %{"date" => date}, socket) do
-    {:noreply, assign(socket, :selected_date, Date.from_iso8601!(date))}
+    {:noreply,
+     assign(socket, :selected_date, Date.from_iso8601!(date))
+     |> assign(:live_action, :calendar_date)}
   end
 
   defp selected_date?(day, selected_date), do: day == selected_date
 
   defp today?(day), do: day == Date.utc_today()
 
-  defp other_month?(day, current_date), do: Date.beginning_of_month(day) != Date.beginning_of_month(current_date)
+  defp other_month?(day, current_date),
+    do: Date.beginning_of_month(day) != Date.beginning_of_month(current_date)
 end
