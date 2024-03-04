@@ -16,7 +16,7 @@ defmodule BodyArchitect.Workouts.Workout do
   @doc false
   def changeset(workout, attrs) do
     workout
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :date])
     |> validate_required([:name])
   end
 end
