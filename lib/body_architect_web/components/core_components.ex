@@ -598,6 +598,33 @@ defmodule BodyArchitectWeb.CoreComponents do
   end
 
   @doc """
+  Renders a data list.
+
+  ## Examples
+
+      <.workout_list>
+        <:item title="Title"><%= @post.title %></:item>
+        <:item title="Views"><%= @post.views %></:item>
+      </.workout_list>
+  """
+  slot :item, required: true do
+    attr :title, :string, required: true
+  end
+
+  def workout_list(assigns) do
+    ~H"""
+    <div class="my-4 p-4 shadow-lg bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl">
+      <dl class="-my-4 divide-y divide-zinc-200">
+        <div :for={item <- @item} class="flex gap-4 py-4 leading-6 sm:gap-8">
+          <dt class="w-1/4 flex-none font-bold text-zinc-400 truncate"><%= item.title %></dt>
+          <dd class="w-full text-zinc-700 truncate"><%= render_slot(item) %></dd>
+        </div>
+      </dl>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a back navigation link.
 
   ## Examples

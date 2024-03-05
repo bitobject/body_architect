@@ -39,7 +39,7 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
           </.link>
           <div class="flex w-full h-full max-w-60 items-center justify-center">
             <% progress = calculate_progress(workout) %>
-            <div class="block w-16 shrink-0 px-2 font-bold text-zinc-500"><%= progress %>%</div>
+            <div class="block w-14 shrink-0 px-2 font-bold text-zinc-500"><%= progress %>%</div>
             <div class="h-4 w-full  bg-gray-200 rounded-xl">
               <div
                 class="text-zinc-50 flex items-center justify-center h-4 rounded-xl bg-gradient-to-r from-cyan-300 to-blue-500 text-center"
