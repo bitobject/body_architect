@@ -72,21 +72,47 @@
     <hr class="" />
     <div class="p-4">
       <p class="text-gray-400 font-bold"><%= gettext("sets") %></p>
-      <ol class="">
-        <li :for={{set, i} <- Enum.with_index(exercise.sets, 1)} class="flex">
-          <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
-            <%= i %>
-          </div>
-          <.live_component
-            module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
-            id={"set_#{set.id}"}
-            title={@page_title}
-            action={@live_action}
-            set={set}
-            patch={~p"/workouts/#{@workout.id}"}
-          />
-        </li>
-      </ol>
+
+      <table>
+        <tbody>
+          <tr :for={{set, i} <- Enum.with_index(exercise.sets, 1)} class="">
+            <td>
+              <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
+                <%= i %>
+              </div>
+            </td>
+            <td>
+              <.live_component
+                module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
+                id={"sset_#{set.id}"}
+                title={@page_title}
+                action={@live_action}
+                set={set}
+                patch={~p"/workouts/#{@workout.id}"}
+              />
+            </td>
+            <td>
+              <div class="px-2 w-16 "><%= set.reps %></div>
+            </td>
+            <td>
+              <div class="px-2 w-16 truncate"><%= set.weight %></div>
+            </td>
+            <td>
+              <.link patch={~p"/workouts/#{set.workout_id}/sets/#{set.id}/edit"}>
+                <p class="px-2 w-16 truncate">Edit</p>
+              </.link>
+            </td>
+            <td>
+              <.link
+                phx-click={JS.push("set_delete", value: %{id: set.id}) |> hide("##{set.id}")}
+                data-confirm="Are you sure?"
+              >
+                <p class="px-2 w-16 truncate">Delete</p>
+              </.link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </li>
 </ol>

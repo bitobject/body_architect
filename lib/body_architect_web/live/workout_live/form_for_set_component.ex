@@ -17,17 +17,6 @@ defmodule BodyArchitectWeb.WorkoutLive.FormForSetComponent do
       >
         <.input field={f[:completed]} type="workout_checkbox" phx-change="save" class="" />
       </.form>
-      <div class="px-2 w-16 "><%= @form.data.reps %></div>
-      <div class="px-2 w-16 truncate"><%= @form.data.weight %></div>
-      <.link patch={~p"/workouts/#{@form.data.workout_id}/sets/#{@form.data.id}/edit"}>
-        <p class="px-2 w-16 truncate">Edit</p>
-      </.link>
-      <.link
-        phx-click={JS.push("set_delete", value: %{id: @form.data.id}) |> hide("##{@form.data.id}")}
-        data-confirm="Are you sure?"
-      >
-        <p class="px-2 w-16 truncate">Delete</p>
-      </.link>
     </div>
     """
   end
