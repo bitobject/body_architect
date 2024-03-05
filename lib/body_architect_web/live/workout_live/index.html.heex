@@ -6,7 +6,6 @@
     </.link>
   </:actions>
 </.header>
-LIVE action: ___________ <%= @live_action %>
 <.table
   id="workouts"
   rows={@streams.workouts}
@@ -45,11 +44,3 @@ LIVE action: ___________ <%= @live_action %>
     patch={~p"/workouts"}
   />
 </.modal>
-
-<.live_component
-  module={BodyArchitectWeb.CalendarComponent}
-  id="@workout.id"
-  ,
-  workouts={@workouts_with_dates}
-  live_action={@live_action}
-/>
