@@ -26,6 +26,7 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
       >
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:date]} type="date" label="Date" />
+        <.input field={@form[:type]} type="select" options={["long", "short"]} label="Type" />
         <.input
           field={@form[:exercises]}
           multiple={true}

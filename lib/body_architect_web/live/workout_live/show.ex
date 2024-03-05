@@ -122,4 +122,38 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
   defp calculate_progress(_) do
     0.0
   end
+
+  defp calculate_progress_workout(%{} = workout) do
+    {completed, all} =
+      Enum.reduce(workout.exercises, {0, 0}, fn exercise, acc ->
+        {completed, all} =
+          if is_list(exercise.sets) do
+            Enum.reduce(exercise.sets, acc, fn
+              %Set{} = set, {completed, all} ->
+                if set.completed do
+                  {completed + 1, all + 1}
+                else
+                  {completed, all + 1}
+                end
+
+              _field, acc ->
+                acc
+            end)
+          else
+            acc
+          end
+      end)
+
+    case {completed, all} do
+      {0, 0} ->
+        100
+
+      {completed, all} ->
+        round(completed / all * 100)
+    end
+  end
+
+  defp calculate_progress_workout(_) do
+    0.0
+  end
 end
