@@ -17,14 +17,9 @@ defmodule BodyArchitectWeb.Router do
   scope "/", BodyArchitectWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-
     live "/workouts", WorkoutLive.Index, :index
     live "/workouts/new", WorkoutLive.Index, :new
     live "/workouts/:id/edit", WorkoutLive.Index, :edit
-
-    live "/workouts/calendar", WorkoutLive.Calendar, :index
-    live "/workouts/calendar/:date", WorkoutLive.Calendar, :show_date
 
     live "/workouts/:id", WorkoutLive.Show, :show
     live "/workouts/:id/exercises/:exercise_id/sets/new", WorkoutLive.Show, :add_set
@@ -45,6 +40,10 @@ defmodule BodyArchitectWeb.Router do
 
     live "/sets/:id", SetLive.Show, :show
     live "/sets/:id/show/edit", SetLive.Show, :edit
+
+    live "/", WorkoutLive.Calendar, :index
+    live "/new_workout/:date", WorkoutLive.Calendar, :new_workout
+    live "/:date", WorkoutLive.Calendar, :show_date
   end
 
   # Other scopes may use custom stacks.

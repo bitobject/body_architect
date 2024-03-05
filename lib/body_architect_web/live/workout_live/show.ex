@@ -95,4 +95,31 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
   defp page_title(:edit_set), do: "Edit Set"
   defp page_title(:add_set), do: "Add Set"
   defp page_title(:new_set), do: "New Set"
+
+  defp calculate_progress(%{} = exercise) do
+    {completed, all} =
+      Enum.reduce(exercise.sets, {0, 0}, fn
+        %Set{} = set, {completed, all} ->
+          if set.completed do
+            {completed + 1, all + 1}
+          else
+            {completed, all + 1}
+          end
+
+        _field, acc ->
+          acc
+      end)
+
+    case {completed, all} do
+      {0, 0} ->
+        100
+
+      {completed, all} ->
+        round(completed / all * 100)
+    end
+  end
+
+  defp calculate_progress(_) do
+    0.0
+  end
 end

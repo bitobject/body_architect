@@ -6,7 +6,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    all_workouts = Workouts.list_workouts()
+    all_workouts = Workouts.list_workouts_with_preloads()
 
     {:ok,
      stream(socket, :workouts, all_workouts)

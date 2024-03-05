@@ -1,21 +1,24 @@
-<.header>
-  Listing Workouts
-  <:actions>
-    <.link patch={~p"/workouts/new"}>
-      <.button>New Workout</.button>
-    </.link>
-  </:actions>
-</.header>
-
-<div>
-  LIVE action: ___________ <%= @live_action %>
-  <div>
-    <h3><%= Calendar.strftime(@current_date, "%B %Y") %></h3>
+<div class="bg-gray-100 p-2 rounded-2xl">
+  <header class="p-2">
+    <p class="text-gray-400 font-bold"><%= gettext("workouts") %></p>
+    <h3 class="text-2xl font-extrabold"><%= Calendar.strftime(@current_date, "%B %Y") %></h3>
     <div>
-      <button type="button" phx-click="prev-month">&laquo; Prev</button>
-      <button type="button" phx-click="next-month">Next &raquo;</button>
+      <button
+        type="button"
+        phx-click="prev-month"
+        class="my-2 p-2 shadow-lg bg-gray-50 rounded-xl text-xl"
+      >
+        &laquo; Prev
+      </button>
+      <button
+        type="button"
+        phx-click="next-month"
+        class="my-2 p-2 shadow-lg bg-gray-50 rounded-xl text-xl"
+      >
+        Next &raquo;
+      </button>
     </div>
-  </div>
+  </header>
 
   <table class="w-full">
     <thead>
@@ -30,17 +33,22 @@
         <td
           :for={day <- week}
           class={[
-            "text-center relative",
-            today?(day) && "bg-green-100",
-            other_month?(day, @current_date) && "bg-gray-100",
-            selected_date?(day, @selected_date) && "bg-blue-100"
+            "text-center relative border-t-2"
           ]}
         >
           <.link
-            patch={~p"/workouts/calendar/#{Calendar.strftime(day, "%Y-%m-%d")}"}
-            class="block text-zinc-400 p-4"
+            patch={~p"/#{Calendar.strftime(day, "%Y-%m-%d")}"}
+            class="block text-zinc-900 p-2"
           >
-            <time class="block" datetime={Calendar.strftime(day, "%Y-%m-%d")}>
+            <time
+              class={[
+                "block rounded-xl w-max mx-auto p-2 py-1",
+                today?(day) && "bg-red-500 text-gray-50",
+                other_month?(day, @current_date) && "bg-gray-500 text-gray-50",
+                selected_date?(day, @selected_date) && "bg-purple-500 text-gray-50"
+              ]}
+              datetime={Calendar.strftime(day, "%Y-%m-%d")}
+            >
               <%= Calendar.strftime(day, "%d") %>
             </time>
             <div class="flex h-2 w-max mx-auto mt-2">
@@ -56,12 +64,7 @@
   </table>
 </div>
 
-<.modal
-  :if={@live_action == :calendar_date}
-  id="calendar-modal"
-  show
-  on_cancel={JS.patch(~p"/workouts/calendar")}
->
+<.modal :if={@live_action == :calendar_date} id="calendar-modal" show on_cancel={JS.patch(~p"/")}>
   <.live_component
     module={BodyArchitectWeb.WorkoutLive.CalendarPageComponent}
     id={@selected_date}
@@ -69,5 +72,16 @@
     action={@live_action}
     workouts={@workouts}
     patch={~p"/workouts"}
+  />
+</.modal>
+
+<.modal :if={@live_action in [:new_workout]} id="workout-modal" show on_cancel={JS.patch(~p"/")}>
+  <.live_component
+    module={BodyArchitectWeb.WorkoutLive.FormComponent}
+    id={@workout.id || :new}
+    title={@page_title}
+    action={@live_action}
+    workout={@workout}
+    patch={~p"/"}
   />
 </.modal>

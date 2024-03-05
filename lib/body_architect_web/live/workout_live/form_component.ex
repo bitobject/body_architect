@@ -83,7 +83,15 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
     end
   end
 
+  defp save_workout(socket, :new_workout, workout_params) do
+    base_save_workout(socket, :new_workout, workout_params)
+  end
+
   defp save_workout(socket, :new, workout_params) do
+    base_save_workout(socket, :new, workout_params)
+  end
+
+  defp base_save_workout(socket, _action, workout_params) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
       :workout,

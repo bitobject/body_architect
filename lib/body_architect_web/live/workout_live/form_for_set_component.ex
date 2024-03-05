@@ -7,7 +7,14 @@ defmodule BodyArchitectWeb.WorkoutLive.FormForSetComponent do
   def render(assigns) do
     ~H"""
     <div class="flex p-2 spacing truncate text-center leading-loose">
-      <.form :let={f} for={@form} class="" id="set-form" phx-target={@myself} phx-submit="save">
+      <.form
+        :let={f}
+        for={@form}
+        class=""
+        id={@id || "set-form"}
+        phx-target={@myself}
+        phx-submit="save"
+      >
         <.input field={f[:completed]} type="workout_checkbox" phx-change="save" class="" />
       </.form>
       <div class="px-2 w-16 "><%= @form.data.reps %></div>

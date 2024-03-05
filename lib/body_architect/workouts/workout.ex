@@ -9,6 +9,7 @@ defmodule BodyArchitect.Workouts.Workout do
     field :date, :date, default: NaiveDateTime.to_date(NaiveDateTime.utc_now())
 
     many_to_many :exercises, Exercise, join_through: Set
+    has_many :sets, Set
 
     timestamps(type: :utc_datetime)
   end

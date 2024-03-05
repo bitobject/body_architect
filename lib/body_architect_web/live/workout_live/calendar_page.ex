@@ -12,23 +12,41 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
-        <%= @date %>
-        <:subtitle>
-          <.link
-            patch={~p"/workouts/new?date=#{Calendar.strftime(@date, "%Y-%m-%d")}"}
-            class="text-zinc-400 "
-          >
-            <div>
-              <.icon name="hero-plus" class="h-6 w-6" />
-            </div>
-          </.link>
-        </:subtitle>
-      </.header>
+      <p class="text-gray-400 font-bold"><%= Calendar.strftime(@date, "%B %Y") %></p>
+      <header class="flex pb-4">
+        <h3 class="text-2xl font-extrabold mr-4">Workouts</h3>
 
-      <div class="h-20 w-14 truncate">
-        <div :for={workout <- @workouts[@date] || []} class="uppercase p-2">
-          <.link navigate={~p"/workouts/#{workout}"}><%= workout.name %></.link>
+        <.link
+          patch={~p"/new_workout/#{Calendar.strftime(@date, "%Y-%m-%d")}"}
+          class="flex items-center justify-center text-zinc-400"
+        >
+          <div class="mr-1">
+            <.icon name="hero-plus" class="h-6 w-6 text-red-500" />
+          </div>
+          <div class="text-center font-extrabold max-w-40 uppercase text-red-400">
+            add workout
+          </div>
+        </.link>
+      </header>
+      <hr class="" />
+      <div class="truncate mt-4">
+        <div
+          :for={workout <- @workouts[@date] || []}
+          class="flex items-center justify-center uppercase py-2 hover:bg-gray-50 rounded-xl"
+        >
+          <.link class="block w-full font-extrabold p-2 truncate" navigate={~p"/workouts/#{workout}"}>
+            <%= workout.name %>
+          </.link>
+          <div class="flex w-full h-full max-w-60 items-center justify-center">
+            <% progress = calculate_progress(workout) %>
+            <div class="block w-16 shrink-0 px-2 font-bold text-zinc-500"><%= progress %>%</div>
+            <div class="h-4 w-full  bg-gray-200 rounded-xl">
+              <div
+                class="text-zinc-50 flex items-center justify-center h-4 rounded-xl bg-gradient-to-r from-cyan-300 to-blue-500 text-center"
+                style={"width: #{progress}%"}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -144,4 +162,38 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp calculate_progress(%{} = workout) do
+    {completed, all} =
+      Enum.reduce(workout.exercises, {0, 0}, fn exercise, acc ->
+        {completed, all} =
+          if is_list(exercise.sets) do
+            Enum.reduce(exercise.sets, acc, fn
+              %Set{} = set, {completed, all} ->
+                if set.completed do
+                  {completed + 1, all + 1}
+                else
+                  {completed, all + 1}
+                end
+
+              _field, acc ->
+                acc
+            end)
+          else
+            acc
+          end
+      end)
+
+    case {completed, all} do
+      {0, 0} ->
+        100
+
+      {completed, all} ->
+        round(completed / all * 100)
+    end
+  end
+
+  defp calculate_progress(_) do
+    0.0
+  end
 end

@@ -20,7 +20,38 @@ defmodule BodyArchitect.Workouts do
 
   """
   def list_workouts do
-    Repo.all(Workout |> preload([:exercises]))
+    Workout
+    |> join(:left, [w], s in Set, on: w.id == s.workout_id)
+    |> join(:left, [w, s], e in Exercise, on: s.exercise_id == e.id)
+    # |> preload([w, s, e], exercises: {e, sets: s})
+    |> order_by([w, s, e], [w.id, e.id, s.id])
+    |> select([w, s, e], [w, e, s])
+    |> Repo.all()
+  end
+
+  @doc false
+  def list_workouts_with_preloads do
+    list_workouts()
+    |> Enum.reduce([], fn [workout, exercise, set], acc ->
+      if set.workout_id == workout.id and exercise.id == set.exercise_id do
+        [[workout, exercise, set] | acc]
+      else
+        acc
+      end
+    end)
+    |> Enum.group_by(&hd(&1), &tl(&1))
+    |> Enum.map(fn {workout, data_withot_workout} ->
+      res = parse_exercises(data_withot_workout)
+      %{workout | exercises: res}
+    end)
+  end
+
+  defp parse_exercises(data) do
+    data
+    |> Enum.group_by(&hd(&1), &tl(&1))
+    |> Enum.map(fn {exercise, data_withot_exercise} ->
+      %{exercise | sets: List.flatten(data_withot_exercise)}
+    end)
   end
 
   @doc """

@@ -15,13 +15,14 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
   @impl true
   def mount(_params, _session, socket) do
     current_date = Date.utc_today()
-    all_workouts = Workouts.list_workouts()
+    all_workouts = Workouts.list_workouts_with_preloads()
 
     assigns = [
       current_date: current_date,
       selected_date: nil,
       week_rows: week_rows(current_date),
-      workouts: Enum.group_by(all_workouts, fn d -> d.date end)
+      workouts: Enum.group_by(all_workouts, fn d -> d.date end),
+      workout: nil
     ]
 
     {:ok, assign(socket, assigns)}
@@ -35,6 +36,14 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:selected_date, nil)
+  end
+
+  defp apply_action(socket, :new_workout, %{"date" => date}) do
+    socket
+    |> assign(:selected_date, Date.from_iso8601!(date))
+    |> assign(:live_action, :new_workout)
+    |> assign(:page_title, "New Workoout")
+    |> assign(:workout, %Workout{exercises: [], date: date})
   end
 
   defp apply_action(socket, :show_date, %{"date" => date}) do
@@ -63,6 +72,13 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
     ]
 
     {:noreply, assign(socket, assigns)}
+  end
+
+  @impl true
+  def handle_info({BodyArchitectWeb.WorkoutLive.FormComponent, {:saved, workout}}, socket) do
+    all_workouts = Workouts.list_workouts_with_preloads()
+
+    {:noreply, assign(socket, :workouts, Enum.group_by(all_workouts, fn d -> d.date end))}
   end
 
   defp save_workout(socket, :edit, workout_params) do
