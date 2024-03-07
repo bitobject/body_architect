@@ -107,9 +107,10 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
             [last | _prev] = sets
 
             sets
-            |> Enum.filter(fn prev_set ->
+            |> Stream.filter(fn prev_set ->
               last.workout_id == prev_set.workout_id
             end)
+            |> Enum.reverse()
           end
 
         {exercise_id, new_sets}

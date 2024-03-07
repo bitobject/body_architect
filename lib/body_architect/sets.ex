@@ -24,7 +24,7 @@ defmodule BodyArchitect.Sets do
   def list_sets_by(params) do
     Set
     |> where(^params)
-    |> order_by(desc: :updated_at)
+    |> order_by(desc: :id)
     |> limit(20)
     # |> group_by([s], [s.updated_at, s.workout_id])
     # |> select([s], {s.workout_id, %{reps: s.reps}})
