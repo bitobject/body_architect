@@ -36,7 +36,7 @@
   </:item>
 </.workout_list>
 
-<.link patch={~p"/workouts/#{@workout}/sets/new"} class="block sticky top-0 mt-4">
+<.link patch={~p"/workouts/#{@workout}/exercises/new"} class="block sticky top-0 mt-4">
   <p class="shadow-lg bg-gray-100 rounded-xl p-2 text-center font-bold uppercase">
     add exercise
   </p>
@@ -151,3 +151,20 @@
     patch={~p"/workouts/#{@workout}"}
   />
 </.modal>
+
+<.modal
+  :if={@live_action in [:add_exercise]}
+  id="set-modal"
+  show
+  on_cancel={JS.patch(~p"/workouts/#{@workout}")}
+>
+  <.live_component
+    module={BodyArchitectWeb.WorkoutLive.AddExerciseFormComponent}
+    id={@workout.id}
+    title={@page_title}
+    action={@live_action}
+    workout={@workout}
+    patch={~p"/workouts/#{@workout}"}
+  />
+</.modal>
+add_exercise

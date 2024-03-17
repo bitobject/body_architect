@@ -90,11 +90,23 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
     |> assign(:set, %Set{workout_id: workout.id})
   end
 
+  defp apply_action(socket, :add_exercise, %{"id" => id}) do
+    workout = Workouts.get_workout!(id)
+
+    socket
+    |> assign(:page_title, page_title(socket.assigns.live_action))
+    |> assign(:workout, workout)
+    |> assign(:exercises, Exercises.list_exercises())
+    |> assign(:set, nil)
+  end
+
   defp page_title(:show), do: "Show Workout"
   defp page_title(:edit), do: "Edit Workout"
   defp page_title(:edit_set), do: "Edit Set"
   defp page_title(:add_set), do: "Add Set"
   defp page_title(:new_set), do: "New Set"
+  defp page_title(:add_exercise), do: "Add exercise"
+  defp page_title(_title), do: "Workout"
 
   defp calculate_progress(%{} = exercise) do
     {completed, all} =
