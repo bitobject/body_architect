@@ -7,7 +7,7 @@
   </:actions>
 </.header>
 
-<.table
+<.custom_table
   id="sets"
   rows={@streams.sets}
   row_click={fn {_id, set} -> JS.navigate(~p"/sets/#{set}") end}
@@ -29,7 +29,7 @@
       Delete
     </.link>
   </:action>
-</.table>
+</.custom_table>
 
 <.modal :if={@live_action in [:new, :edit]} id="set-modal" show on_cancel={JS.patch(~p"/sets")}>
   <.live_component

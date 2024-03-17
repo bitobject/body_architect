@@ -6,7 +6,7 @@
     </.link>
   </:actions>
 </.header>
-<.table
+<.custom_table
   id="workouts"
   rows={@streams.workouts}
   row_click={fn {_id, workout} -> JS.navigate(~p"/workouts/#{workout}") end}
@@ -27,7 +27,7 @@
       Delete
     </.link>
   </:action>
-</.table>
+</.custom_table>
 
 <.modal
   :if={@live_action in [:new, :edit]}

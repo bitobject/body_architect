@@ -7,7 +7,7 @@
   </:actions>
 </.header>
 
-<.table
+<%!-- <.table
   id="exercises"
   rows={@streams.exercises}
   row_click={fn {_id, exercise} -> JS.navigate(~p"/exercises/#{exercise}") end}
@@ -27,7 +27,26 @@
       Delete
     </.link>
   </:action>
-</.table>
+</.table> --%>
+
+<.custom_table
+  id="exercises"
+  rows={@streams.exercises}
+  row_click={fn {_id, exercise} -> JS.navigate(~p"/exercises/#{exercise}") end}
+>
+  <:col :let={{_id, exercise}} label="Name"><%= exercise.name %></:col>
+  <:action :let={{_id, exercise}}>
+    <.link patch={~p"/exercises/#{exercise}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, exercise}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: exercise.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.custom_table>
 
 <.modal
   :if={@live_action in [:new, :edit]}
