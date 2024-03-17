@@ -1,3 +1,42 @@
+<div class="bg-gradient-to-b from-gray-100 to-gray-50 rounded-2xl mb-4">
+  <header class="p-4">
+    <p class="text-gray-400 font-bold"><%= gettext("statistic") %></p>
+  </header>
+  <div class="px-4 pb-2 flex items-center rounded-xl tracking-tighter">
+    <div class="flex items-center justify-center">
+      <div class="w-48">
+        <div class="flex gap-2">
+          <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
+          <div class="text-4xl font-extrabold uppercase truncate"><%= "2000000" %></div>
+        </div>
+        <div class="text-gray-400 font-bold truncate text-xs">
+          <%= gettext("total weight") %>
+        </div>
+      </div>
+    </div>
+    <div class="pl-4">
+      <div class="pb-2 w-36">
+        <div class="flex gap-2">
+          <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
+          <div class="text-3xl font-bold uppercase truncate"><%= "100000" %></div>
+        </div>
+        <div class="text-gray-400 font-bold truncate text-xs">
+          <%= gettext("sets") %>
+        </div>
+      </div>
+      <div class="w-36">
+        <div class="flex gap-2">
+          <i class="text-gray-900 text-xs w-2"></i>
+          <div class="text-3xl font-bold uppercase truncate"><%= "14" %></div>
+        </div>
+        <div class="text-gray-400 font-bold truncate text-xs">
+          <%= gettext("workouts") %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="bg-gradient-to-b from-gray-100 to-gray-50 p-2 rounded-2xl">
   <header class="p-2">
     <p class="text-gray-400 font-bold"><%= gettext("workouts") %></p>

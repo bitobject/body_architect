@@ -14,6 +14,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
   @impl true
   def mount(_params, _session, socket) do
+    IO.inspect(socket.assigns)
     current_date = Date.utc_today()
     all_workouts = Workouts.list_workouts_with_preloads()
 
