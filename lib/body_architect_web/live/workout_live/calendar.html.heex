@@ -7,7 +7,9 @@
       <div class="w-48">
         <div class="flex gap-2">
           <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
-          <div class="text-4xl font-extrabold uppercase truncate"><%= "2000000" %></div>
+          <div class="text-4xl font-extrabold uppercase truncate">
+            <%= elem(@statistic, 0) %>
+          </div>
         </div>
         <div class="text-gray-400 font-bold truncate text-xs">
           <%= gettext("total weight") %>
@@ -17,8 +19,9 @@
     <div class="pl-4">
       <div class="pb-2 w-36">
         <div class="flex gap-2">
-          <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
-          <div class="text-3xl font-bold uppercase truncate"><%= "100000" %></div>
+          <div class="text-3xl font-bold uppercase truncate">
+            <%= elem(@statistic, 1) %>
+          </div>
         </div>
         <div class="text-gray-400 font-bold truncate text-xs">
           <%= gettext("sets") %>
@@ -26,8 +29,9 @@
       </div>
       <div class="w-36">
         <div class="flex gap-2">
-          <i class="text-gray-900 text-xs w-2"></i>
-          <div class="text-3xl font-bold uppercase truncate"><%= "14" %></div>
+          <div class="text-3xl font-bold uppercase truncate">
+            <%= elem(@statistic, 2) %>
+          </div>
         </div>
         <div class="text-gray-400 font-bold truncate text-xs">
           <%= gettext("workouts") %>

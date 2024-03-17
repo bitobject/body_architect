@@ -14,7 +14,6 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect(socket.assigns)
     current_date = Date.utc_today()
     all_workouts = Workouts.list_workouts_with_preloads()
 
@@ -23,7 +22,8 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
       selected_date: nil,
       week_rows: week_rows(current_date),
       workouts: Enum.group_by(all_workouts, fn d -> d.date end),
-      workout: nil
+      workout: nil,
+      statistic: calculate_statistic(all_workouts)
     ]
 
     {:ok, assign(socket, assigns)}
@@ -194,4 +194,33 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
   defp other_month?(day, current_date),
     do: Date.beginning_of_month(day) != Date.beginning_of_month(current_date)
+
+  def calculate_statistic(workouts) do
+    Enum.reduce(workouts, {0, 0, 0}, fn workout,
+                                        {total_weight, total_sets, total_workout_count} ->
+      Enum.reduce(
+        workout.exercises,
+        {total_weight, total_sets, total_workout_count + 1},
+        fn exercise, {weight, sets, workout_count} ->
+          if is_list(exercise.sets) do
+            Enum.reduce(exercise.sets, {weight, sets, workout_count}, fn
+              %Set{} = set,
+              {inner_total_weight, inner_total_sets, inner_total_workout_count} = acc ->
+                if set.completed do
+                  {inner_total_weight + set.weight, inner_total_sets + 1,
+                   inner_total_workout_count}
+                else
+                  acc
+                end
+
+              _field, acc ->
+                acc
+            end)
+          else
+            {weight, sets, workout_count}
+          end
+        end
+      )
+    end)
+  end
 end
