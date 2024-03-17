@@ -6,7 +6,8 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    all_workouts = Workouts.list_workouts_with_preloads()
+    current_user = socket.assigns.current_user
+    all_workouts = Workouts.list_workouts_with_preloads(current_user.id)
 
     {:ok,
      stream(socket, :workouts, all_workouts)
@@ -27,13 +28,17 @@ defmodule BodyArchitectWeb.WorkoutLive.Index do
   defp apply_action(socket, :new, %{"date" => date}) do
     socket
     |> assign(:page_title, "New Workout")
-    |> assign(:workout, %Workout{exercises: [], date: date})
+    |> assign(:workout, %Workout{
+      exercises: [],
+      date: date,
+      user_id: socket.assigns.current_user.id
+    })
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Workout")
-    |> assign(:workout, %Workout{exercises: []})
+    |> assign(:workout, %Workout{exercises: [], user_id: socket.assigns.current_user.id})
   end
 
   defp apply_action(socket, :index, _params) do

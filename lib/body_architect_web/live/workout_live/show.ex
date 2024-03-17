@@ -43,16 +43,19 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
   end
 
   defp apply_action(socket, :edit_set, %{"id" => id, "set_id" => set_id}) do
+    current_user = socket.assigns.current_user
+
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, Workouts.get_workout!(id))
-    |> assign(:exercises, Exercises.list_exercises())
+    |> assign(:exercises, Exercises.list_exercises(current_user.id))
     |> assign(:set, Sets.get_set!(set_id))
   end
 
   defp apply_action(socket, :add_set, %{"id" => id, "exercise_id" => exercise_id}) do
     workout = Workouts.get_workout!(id)
     int_exercise_id = String.to_integer(exercise_id)
+    current_user = socket.assigns.current_user
 
     prev_set =
       workout.exercises
@@ -76,27 +79,29 @@ defmodule BodyArchitectWeb.WorkoutLive.Show do
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, workout)
-    |> assign(:exercises, Exercises.list_exercises())
+    |> assign(:exercises, Exercises.list_exercises(current_user.id))
     |> assign(:set, new_set)
   end
 
   defp apply_action(socket, :new_set, %{"id" => id}) do
     workout = Workouts.get_workout!(id)
+    current_user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, workout)
-    |> assign(:exercises, Exercises.list_exercises())
+    |> assign(:exercises, Exercises.list_exercises(current_user.id))
     |> assign(:set, %Set{workout_id: workout.id})
   end
 
   defp apply_action(socket, :add_exercise, %{"id" => id}) do
     workout = Workouts.get_workout!(id)
+    current_user = socket.assigns.current_user
 
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:workout, workout)
-    |> assign(:exercises, Exercises.list_exercises())
+    |> assign(:exercises, Exercises.list_exercises(current_user.id))
     |> assign(:set, nil)
   end
 

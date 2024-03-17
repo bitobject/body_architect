@@ -45,8 +45,10 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
   @impl true
   def update(%{workout: workout} = assigns, socket) do
     changeset = Workouts.change_workout(workout)
+    current_user = assigns.current_user
 
-    exercises = Exercises.list_exercises() |> Enum.into([], fn x -> {x.name, x.id} end)
+    exercises =
+      Exercises.list_exercises(current_user.id) |> Enum.into([], fn x -> {x.name, x.id} end)
 
     {:ok,
      socket
@@ -93,10 +95,13 @@ defmodule BodyArchitectWeb.WorkoutLive.FormComponent do
   end
 
   defp base_save_workout(socket, _action, workout_params) do
+    current_user = socket.assigns.current_user
+    udpated_workout_params = Map.put(workout_params, "user_id", current_user.id)
+
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
       :workout,
-      Workouts.change_workout(%Workout{}, workout_params)
+      Workouts.change_workout(%Workout{}, udpated_workout_params)
     )
     |> Ecto.Multi.insert_all(:sets, Set, fn %{workout: workout} ->
       Enum.map(workout_params["exercises"], fn exercise_id ->

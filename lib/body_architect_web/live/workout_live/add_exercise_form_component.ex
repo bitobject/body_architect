@@ -45,9 +45,10 @@ defmodule BodyArchitectWeb.WorkoutLive.AddExerciseFormComponent do
   def update(%{workout: workout} = assigns, socket) do
     changeset = Workouts.change_workout(workout)
     existing_exercise_names = Enum.map(workout.exercises, fn exercise -> exercise.name end)
+    current_user = assigns.current_user
 
     exercises =
-      Exercises.list_exercises()
+      Exercises.list_exercises(current_user.id)
       |> Enum.filter(fn exercise -> exercise.name not in existing_exercise_names end)
       |> Enum.into([], fn exercise -> {exercise.name, exercise.id} end)
 

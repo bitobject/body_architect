@@ -6,7 +6,8 @@ defmodule BodyArchitectWeb.ExerciseLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :exercises, Exercises.list_exercises())}
+    current_user = socket.assigns.current_user
+    {:ok, stream(socket, :exercises, Exercises.list_exercises(current_user.id))}
   end
 
   @impl true

@@ -41,6 +41,7 @@
     id={@workout.id || :new}
     title={@page_title}
     action={@live_action}
+    current_user={@current_user}
     workout={@workout}
     patch={~p"/workouts"}
   />

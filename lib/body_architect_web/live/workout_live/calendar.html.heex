@@ -114,6 +114,7 @@
     date={@selected_date}
     action={@live_action}
     workouts={@workouts}
+    current_user={@current_user}
     patch={~p"/workouts"}
   />
 </.modal>
@@ -125,6 +126,7 @@
     title={@page_title}
     action={@live_action}
     workout={@workout}
+    current_user={@current_user}
     patch={~p"/"}
   />
 </.modal>

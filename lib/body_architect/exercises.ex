@@ -17,8 +17,10 @@ defmodule BodyArchitect.Exercises do
       [%Exercise{}, ...]
 
   """
-  def list_exercises do
-    Repo.all(Exercise)
+  def list_exercises(user_id) do
+    Exercise
+    |> where([e], e.user_id == ^user_id)
+    |> Repo.all()
   end
 
   @doc """

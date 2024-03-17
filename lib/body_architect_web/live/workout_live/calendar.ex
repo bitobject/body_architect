@@ -14,8 +14,9 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
   @impl true
   def mount(_params, _session, socket) do
+    current_user = socket.assigns.current_user
     current_date = Date.utc_today()
-    all_workouts = Workouts.list_workouts_with_preloads()
+    all_workouts = Workouts.list_workouts_with_preloads(current_user.id)
 
     assigns = [
       current_date: current_date,
@@ -77,7 +78,8 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
   @impl true
   def handle_info({BodyArchitectWeb.WorkoutLive.FormComponent, {:saved, workout}}, socket) do
-    all_workouts = Workouts.list_workouts_with_preloads()
+    current_user = socket.assigns.current_user
+    all_workouts = Workouts.list_workouts_with_preloads(current_user.id)
 
     {:noreply, assign(socket, :workouts, Enum.group_by(all_workouts, fn d -> d.date end))}
   end

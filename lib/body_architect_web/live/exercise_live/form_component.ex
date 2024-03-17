@@ -68,7 +68,9 @@ defmodule BodyArchitectWeb.ExerciseLive.FormComponent do
   end
 
   defp save_exercise(socket, :new, exercise_params) do
-    case Exercises.create_exercise(exercise_params) do
+    updated_exercise_params = Map.put(exercise_params, "user_id", socket.assigns.current_user.id)
+
+    case Exercises.create_exercise(updated_exercise_params) do
       {:ok, exercise} ->
         notify_parent({:saved, exercise})
 

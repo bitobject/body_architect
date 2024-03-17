@@ -19,8 +19,9 @@ defmodule BodyArchitect.Workouts do
       [%Workout{}, ...]
 
   """
-  def list_workouts do
+  def list_workouts(user_id) do
     Workout
+    |> where([w], w.user_id == ^user_id)
     |> join(:left, [w], s in Set, on: w.id == s.workout_id)
     |> join(:left, [w, s], e in Exercise, on: s.exercise_id == e.id)
     # |> preload([w, s, e], exercises: {e, sets: s})
@@ -30,8 +31,9 @@ defmodule BodyArchitect.Workouts do
   end
 
   @doc false
-  def list_workouts_with_preloads do
-    list_workouts()
+  def list_workouts_with_preloads(user_id) do
+    user_id
+    |> list_workouts()
     |> Enum.reduce([], fn [workout, exercise, set], acc ->
       if set.workout_id == workout.id and exercise.id == set.exercise_id do
         [[workout, exercise, set] | acc]
