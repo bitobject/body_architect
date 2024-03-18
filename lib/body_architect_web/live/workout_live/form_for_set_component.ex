@@ -6,7 +6,7 @@ defmodule BodyArchitectWeb.WorkoutLive.FormForSetComponent do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex p-2 spacing truncate text-center leading-loose">
+    <div class="flex truncate text-center justify-center">
       <.form
         :let={f}
         for={@form}

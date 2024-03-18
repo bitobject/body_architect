@@ -14,7 +14,9 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
     <div>
       <p class="text-gray-400 font-bold"><%= Calendar.strftime(@date, "%B %Y") %></p>
       <header class="flex pb-4">
-        <h3 class="text-2xl font-extrabold mr-4">Workouts</h3>
+        <h3 class="text-2xl font-extrabold mr-4">
+          <%= gettext("workouts") %>
+        </h3>
 
         <.link
           patch={~p"/new_workout/#{Calendar.strftime(@date, "%Y-%m-%d")}"}
@@ -24,7 +26,7 @@ defmodule BodyArchitectWeb.WorkoutLive.CalendarPageComponent do
             <.icon name="hero-plus" class="h-6 w-6 text-red-500" />
           </div>
           <div class="text-center font-extrabold max-w-40 uppercase text-red-400">
-            add workout
+            <%= gettext("add workout") %>
           </div>
         </.link>
       </header>

@@ -51,14 +51,14 @@
         phx-click="prev-month"
         class="my-2 p-2 shadow-lg bg-gray-50 rounded-xl text-xl"
       >
-        &laquo; Prev
+        &laquo; <%= gettext("prev") %>
       </button>
       <button
         type="button"
         phx-click="next-month"
         class="my-2 p-2 shadow-lg bg-gray-50 rounded-xl text-xl"
       >
-        Next &raquo;
+        <%= gettext("next") %> &raquo;
       </button>
     </div>
   </header>
@@ -115,7 +115,7 @@
     action={@live_action}
     workouts={@workouts}
     current_user={@current_user}
-    patch={~p"/workouts"}
+    patch={~p"/"}
   />
 </.modal>
 

@@ -18,7 +18,10 @@ pool_size =
   |> System.fetch_env!()
   |> String.to_integer()
 
+default_locale = System.fetch_env!("DEFAULT_LOCALE")
+
 config :body_architect, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+config :body_architect, BodyArchitectWeb.Gettext, default_locale: default_locale
 
 config :body_architect, BodyArchitectWeb.Endpoint,
   url: [host: System.fetch_env!("WEB"), port: body_architect_port],

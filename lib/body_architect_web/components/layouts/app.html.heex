@@ -13,13 +13,13 @@
         <.link navigate={~p"/users/settings"}>
           <.icon name="hero-adjustments-vertical" class="h-7 w-7 mx-auto flex" />
           <p class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 text-center w-16 truncate">
-            settings
+            <%= gettext("settings") %>
           </p>
         </.link>
         <.link href={~p"/users/log_out"} method="delete">
           <.icon name="hero-arrow-right-start-on-rectangle" class="h-7 w-7 mx-auto flex" />
           <p class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 text-center w-16 truncate">
-            log out
+            <%= gettext("log out") %>
           </p>
         </.link>
       </div>
@@ -28,13 +28,13 @@
         <.link navigate={~p"/users/register"}>
           <.icon name="hero-user-plus" class="h-7 w-7 mx-auto flex" />
           <p class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 text-center w-16 truncate">
-            register
+            <%= gettext("register") %>
           </p>
         </.link>
         <.link navigate={~p"/users/log_in"}>
           <.icon name="hero-user" class="h-7 w-7 mx-auto flex" />
           <p class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 text-center w-16 truncate">
-            log in
+            <%= gettext("log in") %>
           </p>
         </.link>
       </div>
@@ -43,10 +43,10 @@
   <hr class="" />
   <div class="flex items-center justify-center pt-2">
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900 text-sm">
-      <.link navigate={~p"/"}>Home</.link>
-      <.link navigate={~p"/workouts"}>Workouts</.link>
-      <.link navigate={~p"/exercises"}>Exercises</.link>
-      <.link navigate={~p"/sets"}>Sets</.link>
+      <.link navigate={~p"/"}><%= gettext("home") %></.link>
+      <.link navigate={~p"/workouts"}><%= gettext("workouts") %></.link>
+      <.link navigate={~p"/exercises"}><%= gettext("exercises") %></.link>
+      <.link navigate={~p"/sets"}><%= gettext("sets") %></.link>
     </div>
   </div>
 </header>

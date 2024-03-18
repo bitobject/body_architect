@@ -1,0 +1,176 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:533
+#: lib/body_architect_web/components/core_components.ex:818
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:116
+#, elixir-autogen, elixir-format
+msgid "Are you sure?"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:160
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:151
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:172
+#, elixir-autogen, elixir-format
+msgid "Hang in there while we get back on track"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:167
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:150
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:155
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar_page.ex:28
+#, elixir-autogen, elixir-format
+msgid "add workout"
+msgstr ""
+
+#: lib/body_architect_web/components/core_components.ex:76
+#: lib/body_architect_web/components/core_components.ex:130
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:120
+#, elixir-autogen, elixir-format
+msgid "delete"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:109
+#, elixir-autogen, elixir-format
+msgid "edit"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "edit workout"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:49
+#, elixir-autogen, elixir-format
+msgid "exercise"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:48
+#: lib/body_architect_web/live/workout_live/show.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "exercises"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:9
+#: lib/body_architect_web/live/workout_live/show.html.heex:100
+#, elixir-autogen, elixir-format
+msgid "kg"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:37
+#, elixir-autogen, elixir-format
+msgid "log in"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:22
+#, elixir-autogen, elixir-format
+msgid "log out"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "progress"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:31
+#, elixir-autogen, elixir-format
+msgid "register"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:96
+#, elixir-autogen, elixir-format
+msgid "rep"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:49
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:27
+#: lib/body_architect_web/live/workout_live/show.html.heex:74
+#, elixir-autogen, elixir-format
+msgid "sets"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:16
+#, elixir-autogen, elixir-format
+msgid "settings"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:3
+#, elixir-autogen, elixir-format
+msgid "statistic"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:15
+#, elixir-autogen, elixir-format
+msgid "total weight"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "type"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/show.html.heex:103
+#, elixir-autogen, elixir-format
+msgid "weight"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:47
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:37
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:46
+#: lib/body_architect_web/live/workout_live/calendar_page.ex:18
+#, elixir-autogen, elixir-format
+msgid "workouts"
+msgstr ""
+
+#: lib/body_architect_web/components/layouts/app.html.heex:46
+#, elixir-autogen, elixir-format
+msgid "home"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:61
+#, elixir-autogen, elixir-format
+msgid "next"
+msgstr ""
+
+#: lib/body_architect_web/live/workout_live/calendar.html.heex:54
+#, elixir-autogen, elixir-format
+msgid "prev"
+msgstr ""

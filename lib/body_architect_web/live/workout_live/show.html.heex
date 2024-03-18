@@ -2,15 +2,15 @@
   <h1 class="text-4xl px-2 uppercase font-bold"><%= @workout.name %></h1>
   <:actions>
     <.link patch={~p"/workouts/#{@workout}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit workout</.button>
+      <.button><%= gettext("edit workout") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.workout_list>
   <:item title="id"><%= @workout.id %></:item>
-  <:item title="type"><%= @workout.type || "-" %></:item>
-  <:item title="progress">
+  <:item title={gettext("type")}><%= @workout.type || "-" %></:item>
+  <:item title={gettext("progress")}>
     <div class="flex w-full h-full items-center justify-center">
       <% progress = calculate_progress_workout(@workout) %>
       <div class="block w-14 shrink-0 font-bold text-zinc-500"><%= progress %>%</div>
@@ -22,7 +22,7 @@
       </div>
     </div>
   </:item>
-  <:item title="exercises">
+  <:item title={gettext("exercises")}>
     <ol class="flex flex-wrap truncate">
       <li
         :for={exercise <- @workout.exercises}
@@ -70,7 +70,7 @@
       <.icon name="hero-trash" class="h-8 w-8 mr-4" />
     </div>
     <hr class="" />
-    <div class="p-4">
+    <div class="py-4">
       <p class="text-gray-400 font-bold"><%= gettext("sets") %></p>
 
       <table>
@@ -81,7 +81,7 @@
                 <%= i %>
               </div>
             </td>
-            <td>
+            <td class="w-11">
               <.live_component
                 module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
                 id={"sset_#{set.id}"}
@@ -91,23 +91,34 @@
                 patch={~p"/workouts/#{@workout.id}"}
               />
             </td>
-            <td>
-              <div class="px-2 w-16 "><%= set.reps %></div>
+            <td class="px-2">
+              <div class="text-center"><%= set.reps %></div>
+              <p class="text-center w-16 truncate"><%= gettext("rep") %></p>
             </td>
-            <td>
-              <div class="px-2 w-16 truncate"><%= set.weight %></div>
+            <td class="px-2">
+              <div class="flex text-center gap-2">
+                <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
+                <p><%= set.weight %></p>
+              </div>
+              <p class="text-center w-16 truncate mx-auto"><%= gettext("weight") %></p>
             </td>
             <td>
               <.link patch={~p"/workouts/#{set.workout_id}/sets/#{set.id}/edit"}>
-                <p class="px-2 w-16 truncate">Edit</p>
+                <div class="px-2 w-20 truncate">
+                  <.icon name="hero-pencil" class="h-6 w-6 block mx-auto" />
+                  <p class="text-center"><%= gettext("edit") %></p>
+                </div>
               </.link>
             </td>
             <td>
               <.link
                 phx-click={JS.push("set_delete", value: %{id: set.id}) |> hide("##{set.id}")}
-                data-confirm="Are you sure?"
+                data-confirm={gettext("Are you sure?")}
               >
-                <p class="px-2 w-16 truncate">Delete</p>
+                <div class="px-2 w-20 truncate">
+                  <.icon name="hero-trash" class="h-6 w-6 block mx-auto" />
+                  <p class="text-center"><%= gettext("delete") %></p>
+                </div>
               </.link>
             </td>
           </tr>
@@ -169,4 +180,3 @@
     patch={~p"/workouts/#{@workout}"}
   />
 </.modal>
-add_exercise
