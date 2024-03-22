@@ -4,10 +4,10 @@ defmodule BodyArchitect.Workouts do
   """
 
   import Ecto.Query, warn: false
+
   alias BodyArchitect.Sets.Set
   alias BodyArchitect.Exercises.Exercise
   alias BodyArchitect.Repo
-
   alias BodyArchitect.Workouts.Workout
 
   @doc """
@@ -34,12 +34,16 @@ defmodule BodyArchitect.Workouts do
   def list_workouts_with_preloads(user_id) do
     user_id
     |> list_workouts()
-    |> Enum.reduce([], fn [workout, exercise, set], acc ->
-      if set.workout_id == workout.id and exercise.id == set.exercise_id do
+    |> Enum.reduce([], fn
+      [%Workout{} = workout, %Exercise{} = exercise, %Set{} = set], acc ->
+        if set.workout_id == workout.id and exercise.id == set.exercise_id do
+          [[workout, exercise, set] | acc]
+        else
+          acc
+        end
+
+      [workout, exercise, set], acc ->
         [[workout, exercise, set] | acc]
-      else
-        acc
-      end
     end)
     |> Enum.group_by(&hd(&1), &tl(&1))
     |> Enum.map(fn {workout, data_withot_workout} ->
@@ -50,9 +54,15 @@ defmodule BodyArchitect.Workouts do
 
   defp parse_exercises(data) do
     data
+    |> Stream.filter(&hd(&1))
+    |> Stream.filter(&tl(&1))
     |> Enum.group_by(&hd(&1), &tl(&1))
-    |> Enum.map(fn {exercise, data_withot_exercise} ->
-      %{exercise | sets: List.flatten(data_withot_exercise)}
+    |> Enum.map(fn
+      {exercise, data_withot_exercise} ->
+        %{exercise | sets: List.flatten(data_withot_exercise)}
+
+      {nil, _data_withot_exercise} ->
+        []
     end)
   end
 

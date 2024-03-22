@@ -71,17 +71,37 @@
     </div>
     <hr class="" />
     <div class="py-4">
-      <p class="text-gray-400 font-bold"><%= gettext("sets") %></p>
+      <p class="text-gray-400 font-bold mb-4"><%= gettext("sets") %></p>
 
       <table>
-        <tbody>
-          <tr :for={{set, i} <- Enum.with_index(exercise.sets, 1)} class="">
+        <thead>
+          <tr>
             <td>
-              <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
-                <%= i %>
+              <p class="px-2 w-11 truncate"></p>
+            </td>
+            <td>
+              <p class="px-2 w-8 truncate"><%= gettext("№") %></p>
+            </td>
+            <td>
+              <p class=" px-2 w-14 truncate"><%= gettext("rep") %></p>
+            </td>
+            <td>
+              <div class="flex gap-2 px-2 w-20 truncate">
+                <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
+                <p><%= gettext("weight") %></p>
               </div>
             </td>
-            <td class="w-11">
+            <td>
+              <p class="w-16 truncate"><%= gettext("edit") %></p>
+            </td>
+            <td>
+              <p class="w-16 truncate"><%= gettext("delete") %></p>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr :for={{set, i} <- Enum.with_index(exercise.sets, 1)}>
+            <td class="w-11 py-1">
               <.live_component
                 module={BodyArchitectWeb.WorkoutLive.FormForSetComponent}
                 id={"sset_#{set.id}"}
@@ -91,22 +111,21 @@
                 patch={~p"/workouts/#{@workout.id}"}
               />
             </td>
-            <td class="px-2">
-              <div class="text-center"><%= set.reps %></div>
-              <p class="text-center w-16 truncate"><%= gettext("rep") %></p>
-            </td>
-            <td class="px-2">
-              <div class="flex text-center gap-2">
-                <i class="text-gray-900 text-xs w-2"><%= gettext("kg") %></i>
-                <p><%= set.weight %></p>
+            <td>
+              <div class="w-8 truncate text-xl flex justify-center items-center font-extrabold">
+                <%= i %>
               </div>
-              <p class="text-center w-16 truncate mx-auto"><%= gettext("weight") %></p>
+            </td>
+            <td>
+              <p class="px-2 flex text-center gap-2"><%= set.reps %></p>
+            </td>
+            <td>
+              <p class="px-2 flex text-center gap-2"><%= set.weight %></p>
             </td>
             <td>
               <.link patch={~p"/workouts/#{set.workout_id}/sets/#{set.id}/edit"}>
-                <div class="px-2 w-20 truncate">
+                <div class="px-2 truncate">
                   <.icon name="hero-pencil" class="h-6 w-6 block mx-auto" />
-                  <p class="text-center"><%= gettext("edit") %></p>
                 </div>
               </.link>
             </td>
@@ -115,9 +134,8 @@
                 phx-click={JS.push("set_delete", value: %{id: set.id}) |> hide("##{set.id}")}
                 data-confirm={gettext("Are you sure?")}
               >
-                <div class="px-2 w-20 truncate">
+                <div class="px-2 truncate">
                   <.icon name="hero-trash" class="h-6 w-6 block mx-auto" />
-                  <p class="text-center"><%= gettext("delete") %></p>
                 </div>
               </.link>
             </td>

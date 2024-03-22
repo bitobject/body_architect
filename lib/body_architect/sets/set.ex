@@ -2,12 +2,15 @@ defmodule BodyArchitect.Sets.Set do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias BodyArchitect.Workouts.Workout
+
   schema "sets" do
     field :completed, :boolean, default: false
     field :reps, :integer
     field :weight, :float, default: 0.0
-    field :workout_id, :id
     field :exercise_id, :id
+
+    belongs_to :workout, Workout
 
     timestamps(type: :utc_datetime)
   end

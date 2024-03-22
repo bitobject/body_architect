@@ -7,6 +7,7 @@ defmodule BodyArchitect.Sets do
   alias BodyArchitect.Repo
 
   alias BodyArchitect.Sets.Set
+  alias BodyArchitect.Workouts.Workout
 
   @doc """
   Returns the list of sets.
@@ -21,15 +22,21 @@ defmodule BodyArchitect.Sets do
     Repo.all(Set)
   end
 
-  def list_sets_by(params) do
+  def list_sets_by(params, additional_params \\ []) do
+    workout_type = Keyword.get(additional_params, :workout_type)
+
     Set
+    |> join(:left, [s], w in Workout, on: w.id == s.workout_id)
     |> where(^params)
     |> order_by(desc: :id)
     |> limit(20)
-    # |> group_by([s], [s.updated_at, s.workout_id])
-    # |> select([s], {s.workout_id, %{reps: s.reps}})
+    |> preload([s, w], workout: w)
+    |> maybe_add_workout_type(workout_type)
     |> Repo.all()
   end
+
+  defp maybe_add_workout_type(query, nil), do: query
+  defp maybe_add_workout_type(query, type), do: where(query, [s, w], w.type == ^type)
 
   @doc """
   Gets a single set.

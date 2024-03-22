@@ -100,15 +100,17 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
   end
 
   defp save_workout(socket, :new, workout_params) do
+    type = workout_params["type"]
+
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
       :workout,
       Workouts.change_workout(%Workout{}, workout_params)
     )
     |> Ecto.Multi.insert_all(:sets, Set, fn %{workout: workout} ->
-      Enum.map(workout_params["exercises"], fn exercise_id ->
+      Enum.map(workout_params["exercises"] || [], fn exercise_id ->
         exercise_id = String.to_integer(exercise_id)
-        sets = Sets.list_sets_by(exercise_id: exercise_id)
+        sets = Sets.list_sets_by([exercise_id: exercise_id], workout_type: type)
 
         new_sets =
           if sets == [] do
@@ -118,7 +120,7 @@ defmodule BodyArchitectWeb.WorkoutLive.Calendar do
 
             sets
             |> Stream.filter(fn prev_set ->
-              last.workout_id == prev_set.workout_id
+              last.workout_id == prev_set.workout_id and type == prev_set.workout.type
             end)
             |> Enum.reverse()
           end

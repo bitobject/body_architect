@@ -75,13 +75,13 @@ defmodule BodyArchitectWeb.WorkoutLive.AddExerciseFormComponent do
 
   defp save_workout(socket, _, workout_params) do
     workout = socket.assigns.workout
-    workout_params |> IO.inspect()
+    type = workout_params["type"]
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:sets, Set, fn _acc ->
-      Enum.map(workout_params["exercises"], fn exercise_id ->
+      Enum.map(workout_params["exercises"] || [], fn exercise_id ->
         exercise_id = String.to_integer(exercise_id)
-        sets = Sets.list_sets_by(exercise_id: exercise_id)
+        sets = Sets.list_sets_by([exercise_id: exercise_id], workout_type: type)
 
         new_sets =
           if sets == [] do
@@ -91,7 +91,7 @@ defmodule BodyArchitectWeb.WorkoutLive.AddExerciseFormComponent do
 
             sets
             |> Stream.filter(fn prev_set ->
-              last.workout_id == prev_set.workout_id
+              last.workout_id == prev_set.workout_id and type == prev_set.workout.type
             end)
             |> Enum.reverse()
           end
@@ -127,7 +127,6 @@ defmodule BodyArchitectWeb.WorkoutLive.AddExerciseFormComponent do
       |> List.flatten()
     end)
     |> Repo.transaction()
-    |> IO.inspect()
     |> case do
       {:ok, %{sets: _sets}} ->
         Workouts.get_workout!(socket.assigns.workout.id)
